@@ -1,0 +1,1 @@
+{{-- Halaman ini sekarang dikelola oleh Inertia.js - lihat resources/js/pages/public/products/Show.vue --}} 

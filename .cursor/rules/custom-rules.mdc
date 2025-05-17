@@ -1,0 +1,298 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- RESPONSE SELALU MENGGUNAKAN BAHASA INDONESIA
+- TIDAK MENGGUNAKAN REACT
+- INI APLIKASI MONOLITH, menggunakan INERTIA JS, LARAVEL 12, 
+
+
+
+# Struktur Direktori Prompt-Store 
+- Harus mematuhi aturan arsitektur dan penamaan folder dan file
+```
+prompt-store/
+│
+├── app/                                # Direktori utama aplikasi Laravel
+│   ├── Console/                        # Command line interfaces
+│   │   └── Commands/                   # Custom artisan commands
+│   │
+│   ├── Exceptions/                     # Custom exception handling
+│   │
+│   ├── Http/
+│   │   ├── Controllers/                # HTTP request handlers
+│   │   │   ├── Admin/                  # Admin area controllers
+│   │   │   │   ├── ProductController.php
+│   │   │   │   ├── OrderController.php
+│   │   │   │   └── ...
+│   │   │   ├── Api/                    # API controllers
+│   │   │   │   └── ...
+│   │   │   ├── Auth/                   # Authentication controllers
+│   │   │   │   ├── LoginController.php
+│   │   │   │   └── RegisterController.php
+│   │   │   ├── Settings/               # Settings controllers
+│   │   │   ├── Controller.php          # Base controller
+│   │   │   ├── PageController.php
+│   │   │   ├── ProductController.php
+│   │   │   ├── OrderController.php
+│   │   │   ├── CartController.php
+│   │   │   └── ...
+│   │   │
+│   │   ├── Middleware/                 # HTTP middleware
+│   │   │   ├── Authenticate.php
+│   │   │   ├── RedirectIfAuthenticated.php
+│   │   │   └── ...
+│   │   │
+│   │   └── Requests/                   # Form validation requests
+│   │       ├── StoreProductRequest.php
+│   │       ├── UpdateOrderRequest.php
+│   │       └── ...
+│   │
+│   ├── Models/                         # Eloquent models
+│   │   ├── User.php
+│   │   ├── Product.php
+│   │   ├── Order.php
+│   │   ├── OrderItem.php
+│   │   ├── Cart.php
+│   │   ├── Payment.php
+│   │   ├── PaymentMethod.php
+│   │   ├── Coupon.php
+│   │   ├── Category.php
+│   │   ├── Service.php
+│   │   ├── WhatsAppTemplate.php
+│   │   └── ...
+│   │
+│   ├── Providers/                      # Service providers
+│   │   ├── AppServiceProvider.php
+│   │   ├── AuthServiceProvider.php
+│   │   ├── EventServiceProvider.php
+│   │   ├── RouteServiceProvider.php
+│   │   └── ...
+│   │
+│   ├── Services/                       # Business logic services
+│   │   ├── OrderService.php
+│   │   ├── PaymentService.php
+│   │   ├── WhatsAppService.php
+│   │   └── ...
+│   │
+│   └── Traits/                         # Shared traits for models/controllers
+│       ├── HasPermissions.php
+│       └── ...
+│
+├── bootstrap/                          # Laravel bootstrap files
+│   ├── app.php
+│   └── cache/
+│
+├── config/                             # Configuration files
+│   ├── app.php
+│   ├── auth.php
+│   ├── database.php
+│   ├── filesystems.php
+│   ├── permission.php
+│   └── ...
+│
+├── database/                           # Database related files
+│   ├── factories/                      # Model factories for testing
+│   │   ├── UserFactory.php
+│   │   ├── ProductFactory.php
+│   │   └── ...
+│   │
+│   ├── migrations/                     # Database migrations
+│   │   ├── 2014_10_12_000000_create_users_table.php
+│   │   ├── xxxx_xx_xx_xxxxxx_create_products_table.php
+│   │   ├── xxxx_xx_xx_xxxxxx_create_orders_table.php
+│   │   └── ...
+│   │
+│   └── seeders/                        # Database seeders
+│       ├── DatabaseSeeder.php
+│       ├── UserSeeder.php
+│       ├── ProductSeeder.php
+│       └── ...
+│
+├── public/                             # Publicly accessible files
+│   ├── index.php                       # Entry point
+│   ├── favicon.ico
+│   ├── robots.txt
+│   ├── css/                            # Compiled CSS
+│   ├── js/                             # Compiled JavaScript
+│   └── images/                         # Static images
+│
+├── resources/                          # Frontend resources
+│   ├── css/                            # CSS source files
+│   │   ├── app.css
+│   │   └── ...
+│   │
+│   ├── js/                             # JavaScript source files
+│   │   ├── app.ts                      # Main entry point
+│   │   ├── bootstrap.ts
+│   │   ├── event-bus.ts
+│   │   ├── ziggy.js
+│   │   ├── ssr.ts
+│   │   ├── lazy-load.js
+│   │   │
+│   │   ├── components/                 # Vue components
+│   │   │   ├── ui/                     # UI components
+│   │   │   │   ├── Button.vue
+│   │   │   │   ├── Input.vue
+│   │   │   │   ├── Card.vue
+│   │   │   │   ├── Dropdown.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── cart/
+│   │   │   │   ├── CartItem.vue
+│   │   │   │   ├── CartSummary.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── product/
+│   │   │   │   ├── ProductCard.vue
+│   │   │   │   ├── ProductGallery.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   └── ...
+│   │   │
+│   │   ├── composables/                # Vue composition functions
+│   │   │   ├── useCart.ts
+│   │   │   ├── useAuth.ts
+│   │   │   └── ...
+│   │   │
+│   │   ├── layouts/                    # Page layouts
+│   │   │   ├── AdminLayout.vue
+│   │   │   ├── AuthLayout.vue
+│   │   │   ├── DefaultLayout.vue
+│   │   │   ├── GuestLayout.vue
+│   │   │   └── ...
+│   │   │
+│   │   ├── lib/                        # Utility functions
+│   │   │   ├── helpers.ts
+│   │   │   ├── formatters.ts
+│   │   │   └── ...
+│   │   │
+│   │   ├── pages/                      # Page components
+│   │   │   ├── admin/                  # Admin pages
+│   │   │   │   ├── products/
+│   │   │   │   │   ├── Index.vue
+│   │   │   │   │   ├── Create.vue
+│   │   │   │   │   ├── Edit.vue
+│   │   │   │   │   └── Show.vue
+│   │   │   │   ├── orders/
+│   │   │   │   ├── coupons/
+│   │   │   │   ├── users/
+│   │   │   │   ├── dashboard/
+│   │   │   │   ├── settings/
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── auth/                   # Authentication pages
+│   │   │   │   ├── Login.vue
+│   │   │   │   ├── Register.vue
+│   │   │   │   ├── ForgotPassword.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── dashboard/              # User dashboard
+│   │   │   │   ├── Index.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   ├── public/                 # Public facing pages
+│   │   │   │   ├── home/
+│   │   │   │   │   └── Index.vue
+│   │   │   │   ├── about/
+│   │   │   │   │   └── Index.vue
+│   │   │   │   ├── contact/
+│   │   │   │   │   └── Index.vue
+│   │   │   │   ├── products/
+│   │   │   │   │   ├── Index.vue
+│   │   │   │   │   └── Show.vue
+│   │   │   │   ├── services/
+│   │   │   │   ├── cart/
+│   │   │   │   └── orders/
+│   │   │   │
+│   │   │   ├── settings/               # User settings
+│   │   │   │   ├── Profile.vue
+│   │   │   │   └── ...
+│   │   │   │
+│   │   │   └── user/                   # User account pages
+│   │   │       ├── orders/
+│   │   │       └── ...
+│   │   │
+│   │   ├── shadcn/                     # Shadcn UI components
+│   │   │
+│   │   ├── types/                      # TypeScript type definitions
+│   │   │   ├── index.ts
+│   │   │   ├── models.ts
+│   │   │   └── ...
+│   │   │
+│   │   └── utils/                      # Utility functions
+│   │       ├── format.ts
+│   │       ├── validation.ts
+│   │       └── ...
+│   │
+│   ├── views/                          # Laravel Blade templates
+│   │   ├── app.blade.php               # Main layout for Inertia
+│   │   └── emails/                     # Email templates
+│   │
+│   └── docs/                           # Documentation files
+│
+├── routes/                             # Route definitions
+│   ├── web.php                         # Web routes
+│   ├── api.php                         # API routes
+│   ├── admin.php                       # Admin routes
+│   ├── auth.php                        # Authentication routes
+│   ├── settings.php                    # Settings routes
+│   └── console.php                     # Console routes
+│
+├── storage/                            # Laravel storage
+│   ├── app/
+│   │   └── public/                     # User uploaded files
+│   │       ├── products/
+│   │       ├── profiles/
+│   │       └── ...
+│   ├── framework/
+│   └── logs/
+│
+├── tests/                              # Test files
+│   ├── Feature/                        # Feature tests
+│   │   ├── Auth/
+│   │   ├── Products/
+│   │   ├── Orders/
+│   │   └── ...
+│   │
+│   ├── Unit/                           # Unit tests
+│   │   ├── Models/
+│   │   ├── Services/
+│   │   └── ...
+│   │
+│   └── Browser/                        # Browser tests
+│
+├── vendor/                             # Composer dependencies
+│
+├── node_modules/                       # NPM dependencies
+│
+├── .env                                # Environment variables
+├── .env.example                        # Example environment config
+├── .gitignore                          # Git ignore rules
+├── .editorconfig                       # Editor configuration
+├── .prettierrc                         # Prettier configuration
+├── .prettierignore                     # Prettier ignore rules
+├── artisan                             # Laravel CLI
+├── composer.json                       # PHP dependencies
+├── composer.lock                       # PHP dependency lock
+├── package.json                        # JavaScript dependencies
+├── package-lock.json                   # JavaScript dependency lock
+├── phpunit.xml                         # PHPUnit configuration
+├── tailwind.config.js                  # Tailwind CSS configuration
+├── tailwind.plugins.js                 # Tailwind plugins
+├── tsconfig.json                       # TypeScript configuration
+├── vite.config.ts                      # Vite configuration
+├── LICENSE                             # License file
+└── README.md                           # Project documentation
+```
+
+Keterangan tambahan:
+1. Struktur ini mengikuti konvensi Laravel dan Vue.js, disesuaikan dengan pola pengembangan yang terlihat di project prompt-store
+2. Direktori frontend (`resources/js/`) diorganisasi menggunakan pendekatan modular untuk memisahkan komponen, halaman, dan logika bisnis
+3. Backend mengikuti struktur standar Laravel dengan penambahan direktori `Services/` untuk memisahkan logika bisnis dari controllers
+4. Model dikelompokkan berdasarkan domain (user, product, order, dll)
+5. Struktur ini mendukung pemisahan yang jelas antara kode frontend dan backend, dengan koneksi melalui Inertia.js
+
+Struktur ini dapat digunakan sebagai referensi untuk pengembangan dan memastikan konsistensi dalam organisasi file di seluruh project.
+

@@ -1,0 +1,1 @@
+{!! \Illuminate\Support\Arr::get(get_defined_vars(), 'html', $html) !!} 
