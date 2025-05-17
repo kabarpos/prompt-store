@@ -34,17 +34,45 @@
             <div class="w-full md:w-64">
               <div class="space-y-1.5">
                 <Label for="status">Status</Label>
-                <Select v-model="selectedStatus" @update:modelValue="applyFilters">
-                  <SelectTrigger id="status">
-                    <SelectValue :placeholder="selectedStatusLabel" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Semua Status</SelectItem>
-                    <SelectItem v-for="(label, status) in statuses" :key="status" :value="status">
-                      {{ label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <div class="relative">
+                  <div 
+                    class="custom-select-container" 
+                    :class="{ 'active': isSelectOpen }"
+                    ref="selectRef"
+                  >
+                    <div 
+                      @click="toggleSelect" 
+                      class="custom-select-trigger flex w-full items-center justify-between gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 py-2 text-sm shadow-sm hover:border-slate-300 dark:hover:border-slate-600 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer h-9"
+                    >
+                      <span>{{ selectedStatusLabel }}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50 transition-transform" :class="{ 'rotate-180': isSelectOpen }">
+                        <path d="m6 9 6 6 6-6"></path>
+                      </svg>
+                    </div>
+                    
+                    <div 
+                      v-if="isSelectOpen" 
+                      class="custom-select-dropdown bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg mt-1 overflow-hidden z-50 absolute w-full"
+                    >
+                      <div 
+                        class="custom-select-option py-2 px-3 text-amber-600 dark:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer text-sm font-medium"
+                        @click="selectStatus('')"
+                        :class="{ 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300': selectedStatus === '' }"
+                      >
+                        Semua Status
+                      </div>
+                      <div 
+                        v-for="(label, status) in statuses" 
+                        :key="status"
+                        @click="selectStatus(status)"
+                        class="custom-select-option py-2 px-3 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer text-sm"
+                        :class="{ 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium': selectedStatus === status }"
+                      >
+                        {{ label }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -136,7 +164,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TableRow, TableCell } from '@/components/ui/table';
 import Pagination from '@/components/Pagination.vue';
 import AdminTable from '@/components/AdminTable.vue';
@@ -164,11 +191,34 @@ const breadcrumbs = [
 const search = ref(props.filters?.search || '');
 const selectedStatus = ref(props.filters?.status || '');
 
+// State untuk custom select dropdown
+const isSelectOpen = ref(false);
+const selectRef = ref(null);
+
 // Computed property untuk label status terpilih
 const selectedStatusLabel = computed(() => {
   if (!selectedStatus.value) return 'Semua Status';
   return props.statuses[selectedStatus.value] || 'Semua Status';
 });
+
+// Toggle dropdown
+const toggleSelect = () => {
+  isSelectOpen.value = !isSelectOpen.value;
+};
+
+// Pilih status
+const selectStatus = (status) => {
+  selectedStatus.value = status;
+  isSelectOpen.value = false;
+  applyFilters();
+};
+
+// Handle click outside
+const handleClickOutside = (event) => {
+  if (selectRef.value && !selectRef.value.contains(event.target)) {
+    isSelectOpen.value = false;
+  }
+};
 
 // Columns definition for AdminTable
 const columns = [
@@ -203,6 +253,7 @@ const getStatusLabel = (status) => {
 };
 
 const applyFilters = () => {
+  loading.value = true;
   router.get(
     route('orders.index'),
     { 
@@ -212,7 +263,13 @@ const applyFilters = () => {
     { 
       preserveState: true,
       replace: true,
-      only: ['orders']
+      only: ['orders'],
+      onSuccess: () => {
+        loading.value = false;
+      },
+      onError: () => {
+        loading.value = false;
+      }
     }
   );
 };
@@ -220,12 +277,17 @@ const applyFilters = () => {
 const resetFilters = () => {
   search.value = '';
   selectedStatus.value = '';
+  isSelectOpen.value = false;
   
   // Pastikan UI diupdate sebelum mengirim request
   nextTick(() => {
+    loading.value = true;
     // Gunakan router.visit untuk memuat ulang halaman tanpa filter
     router.visit(route('orders.index'), {
-      preserveScroll: false
+      preserveScroll: false,
+      onFinish: () => {
+        loading.value = false;
+      }
     });
   });
 };
@@ -236,5 +298,13 @@ onMounted(() => {
     search.value = props.filters.search || '';
     selectedStatus.value = props.filters.status || '';
   }
+  
+  // Add event listener for click outside
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  // Remove event listener
+  document.removeEventListener('click', handleClickOutside);
 });
 </script> 
