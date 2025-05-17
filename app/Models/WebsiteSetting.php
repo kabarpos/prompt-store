@@ -87,7 +87,12 @@ class WebsiteSetting extends Model
         }
 
         // Jika file disimpan secara lokal
-        return asset('storage/' . $path);
+        $fullUrl = asset('storage/' . $path);
+        
+        // Debug
+        \Log::info("Generated media URL for path: {$path} => {$fullUrl}");
+        
+        return $fullUrl;
     }
 
     /**
@@ -97,6 +102,13 @@ class WebsiteSetting extends Model
      */
     public function getLogoUrl(): ?string
     {
+        // Debug
+        if ($this->logo_path) {
+            \Log::info("Logo path exists: {$this->logo_path}");
+        } else {
+            \Log::info("Logo path is empty");
+        }
+        
         return $this->getMediaUrl($this->logo_path);
     }
 

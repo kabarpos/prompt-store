@@ -13,6 +13,7 @@ import { Globe, FileCode, Upload, Image as ImageIcon, Mail as MailIcon, Settings
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import axios from 'axios';
 
 // Define props
 const props = defineProps<{
@@ -266,20 +267,35 @@ const submitScripts = () => {
   });
 };
 
-// Upload logo
+// Fungsi untuk mengunggah logo
 const uploadLogo = () => {
   if (!logoForm.logo) return;
   
-  logoForm.post(route('admin.settings.upload-logo'), {
-    forceFormData: true,
+  logoForm.post(route('admin.settings.update-logo'), {
     onSuccess: () => {
       toast.success('Berhasil', {
-        description: 'Logo berhasil diupload',
+        description: 'Logo berhasil diunggah',
       });
+      
+      // Reset form
+      logoForm.logo = null;
+      
+      // Hapus cache website settings
+      axios.post(route('admin.settings.clear-cache'))
+        .then(() => {
+          console.log('Cache website settings berhasil dihapus');
+          // Reload halaman untuk memperbarui logo
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        })
+        .catch(error => {
+          console.error('Gagal menghapus cache website settings:', error);
+        });
     },
     onError: () => {
       toast.error('Gagal', {
-        description: 'Terjadi kesalahan saat mengupload logo',
+        description: 'Terjadi kesalahan saat mengunggah logo',
       });
     },
   });

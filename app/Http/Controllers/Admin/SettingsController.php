@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\WebsiteSetting;
 use Illuminate\Http\Request;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -83,5 +85,70 @@ class SettingsController extends Controller
 
         return redirect()->back()
             ->with('success', 'Pengaturan webhook berhasil diperbarui');
+    }
+    
+    /**
+     * Update logo for the website.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateLogo(Request $request)
+    {
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        // Dapatkan instance settings
+        $settings = WebsiteSetting::getSettings();
+        
+        // Hapus logo lama jika ada
+        if ($settings->logo_path && Storage::disk('public')->exists($settings->logo_path)) {
+            Storage::disk('public')->delete($settings->logo_path);
+        }
+        
+        // Simpan logo baru
+        $path = $request->file('logo')->store('logos', 'public');
+        
+        // Update settings
+        $settings->update([
+            'logo_path' => $path,
+        ]);
+        
+        // Hapus cache website settings
+        $this->clearWebsiteSettingsCache();
+        
+        \Log::info("Logo berhasil diperbarui. Path: {$path}");
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Logo berhasil diperbarui',
+            'path' => $path,
+            'url' => $settings->getLogoUrl(),
+        ]);
+    }
+    
+    /**
+     * Clear website settings cache.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clearCache()
+    {
+        $this->clearWebsiteSettingsCache();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Cache website settings berhasil dihapus',
+        ]);
+    }
+    
+    /**
+     * Helper method to clear website settings cache.
+     */
+    private function clearWebsiteSettingsCache()
+    {
+        Cache::forget('website_settings');
+        \Log::info('Website settings cache cleared');
     }
 } 

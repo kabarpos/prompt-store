@@ -67,6 +67,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('settings/og-image', [SettingController::class, 'uploadOgImage'])->name('settings.upload-og-image');
         Route::post('settings/update-webhook', [SettingController::class, 'updateWebhook'])->name('settings.update-webhook');
         
+        // Route baru untuk pengelolaan logo dan cache
+        Route::post('settings/update-logo', [\App\Http\Controllers\Admin\SettingsController::class, 'updateLogo'])->name('settings.update-logo');
+        Route::post('settings/clear-cache', [\App\Http\Controllers\Admin\SettingsController::class, 'clearCache'])->name('settings.clear-cache');
+        
         // Coupon Routes
         Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
         Route::patch('coupons/{coupon}/toggle-active', [\App\Http\Controllers\Admin\CouponController::class, 'toggleActive'])->name('coupons.toggle-active');

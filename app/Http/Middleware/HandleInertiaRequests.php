@@ -56,7 +56,31 @@ class HandleInertiaRequests extends Middleware
         // Get website settings
         try {
             $websiteSettings = Cache::remember('website_settings', now()->addHours(24), function () {
-                return WebsiteSetting::pluck('value', 'key')->toArray();
+                // Dapatkan model settings
+                $settings = WebsiteSetting::getSettings();
+                
+                // Konversi ke array
+                $settingsArray = [
+                    'site_name' => $settings->site_name,
+                    'site_subtitle' => $settings->site_subtitle,
+                    'site_description' => $settings->site_description,
+                    'contact_email' => $settings->contact_email,
+                    'contact_phone' => $settings->contact_phone,
+                    'contact_address' => $settings->contact_address,
+                    'logo_path' => $settings->logo_path,
+                    'favicon_path' => $settings->favicon_path,
+                    'default_og_image_path' => $settings->default_og_image_path,
+                ];
+                
+                // Tambahkan URL lengkap untuk media
+                $settingsArray['logoUrl'] = $settings->getLogoUrl();
+                $settingsArray['faviconUrl'] = $settings->getFaviconUrl();
+                $settingsArray['ogImageUrl'] = $settings->getOgImageUrl();
+                
+                // Format camelCase untuk frontend
+                $settingsArray['siteName'] = $settings->site_name;
+                
+                return $settingsArray;
             });
         } catch (\Exception $e) {
             Log::error('Error saat mengambil website settings', [

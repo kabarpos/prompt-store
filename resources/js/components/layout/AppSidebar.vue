@@ -165,11 +165,11 @@ const filteredAdminNavItems = computed(() => filterNavItems(adminNavItems));
 
 <template>
     <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
+        <SidebarHeader class="sidebar-header">
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
+                    <SidebarMenuButton size="lg" as-child class="logo-container">
+                        <Link :href="route('dashboard')" class="flex items-center w-full px-2 py-1">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -190,3 +190,31 @@ const filteredAdminNavItems = computed(() => filterNavItems(adminNavItems));
     </Sidebar>
     <slot />
 </template>
+
+<style scoped>
+/* Styling untuk header sidebar */
+:deep(.sidebar-header) {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Styling untuk container logo */
+:deep(.logo-container) {
+    padding: 0.5rem;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    transition: background-color 0.2s;
+}
+
+:deep(.logo-container:hover) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+:deep(.logo-container a) {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+</style>
