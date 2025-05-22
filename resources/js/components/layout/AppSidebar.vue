@@ -54,6 +54,11 @@ const mainNavItems: NavItem[] = [
         icon: ShoppingBag,
     },
     {
+        title: 'My Digital Products',
+        href: '/digital-products',
+        icon: Package,
+    },
+    {
         title: 'Documents',
         href: route('my-documents'),
         icon: Mail,

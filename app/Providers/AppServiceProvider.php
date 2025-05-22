@@ -27,6 +27,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Tambahkan SQL query logging untuk debug product update
+        \DB::listen(function ($query) {
+            if (strpos($query->sql, 'products') !== false && strpos($query->sql, 'update') !== false) {
+                \Log::debug('SQL QUERY:', [
+                    'query' => $query->sql,
+                    'bindings' => $query->bindings,
+                    'time' => $query->time
+                ]);
+            }
+        });
     }
 }

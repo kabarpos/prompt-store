@@ -20,6 +20,8 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FixCouponController;
 use App\Http\Controllers\Admin\WhatsAppTemplateController;
 use App\Http\Controllers\Admin\WhatsAppTestController;
+use App\Http\Controllers\Customer\MyProductController;
+use App\Http\Controllers\DigitalProductController;
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard Route
@@ -63,6 +65,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
         Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
         Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
+        
+        // Digital Products Routes
+        Route::get('/my-products', [MyProductController::class, 'index'])
+            ->name('my-products.index');
+        
+        Route::get('/my-products/{orderId}/{productId}', [MyProductController::class, 'show'])
+            ->name('my-products.show');
+        
+        Route::get('/documents/download/{document}', [MyProductController::class, 'downloadDocument'])
+            ->name('documents.download');
     });
     
     // User Orders
@@ -106,20 +118,19 @@ Route::middleware(['auth'])->group(function () {
     
     // Public Payment Routes
     Route::get('/payment-methods', [PaymentController::class, 'getPaymentMethods'])->name('payment.methods');
+
+    // Digital Products Routes
+    Route::get('/digital-products', [DigitalProductController::class, 'index'])->name('digital-products.index');
+    Route::get('/digital-products/{digitalAccess}', [DigitalProductController::class, 'show'])->name('digital-products.show');
+    Route::get('/digital-products/{digitalAccess}/download', [DigitalProductController::class, 'download'])->name('digital-products.download');
 });
 
 // Public Routes
 Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/services', [ServiceController::class, 'index'])->name('services');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
 
-// Products Routes (Public)
-Route::middleware(['http-cache'])->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
-});
+// Products Routes - removed and integrated into HomePage
 
 // Cart Routes (Public)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

@@ -26,6 +26,12 @@ class Product extends Model
         'product_features',
         'product_values',
         'demo_url',
+        'is_digital',
+        'has_hidden_content',
+        'hidden_content',
+        'digital_file_path',
+        'download_limit',
+        'access_days',
     ];
 
     protected $casts = [
@@ -33,9 +39,14 @@ class Product extends Model
         'is_active' => 'boolean',
         'product_features' => 'array',
         'product_values' => 'array',
+        'is_digital' => 'boolean',
+        'has_hidden_content' => 'boolean',
+        'hidden_content' => 'array',
+        'download_limit' => 'integer',
+        'access_days' => 'integer',
     ];
 
-    protected $appends = ['url', 'lazy_image'];
+    protected $appends = ['url', 'lazy_image', 'featured_image_url'];
 
     protected static function boot()
     {
@@ -129,6 +140,52 @@ class Product extends Model
         return route('products.show', $this->slug);
     }
 
+    /**
+     * Check if product access has expired for an order
+     *
+     * @param \App\Models\Order $order
+     * @return bool
+     */
+    public function hasAccessExpired($order)
+    {
+        if (!$this->is_digital || !$this->access_days) {
+            return false; // Tidak ada batasan waktu untuk akses non-digital
+        }
+
+        // Hanya hitung dari tanggal order selesai (completed)
+        if ($order->status !== Order::STATUS_COMPLETED) {
+            return true; // Belum selesai = belum bisa akses
+        }
+
+        // Ambil tanggal order status berubah jadi completed
+        $completedDate = $order->updated_at;
+        
+        // Hitung tanggal berakhir akses
+        $expiryDate = $completedDate->addDays($this->access_days);
+        
+        // Bandingkan dengan tanggal sekarang
+        return now()->greaterThan($expiryDate);
+    }
+
+    /**
+     * Get remaining days of access for this product
+     *
+     * @param \App\Models\Order $order
+     * @return int|null
+     */
+    public function getRemainingAccessDays($order)
+    {
+        if (!$this->is_digital || !$this->access_days || $order->status !== Order::STATUS_COMPLETED) {
+            return null;
+        }
+
+        $completedDate = $order->updated_at;
+        $expiryDate = $completedDate->addDays($this->access_days);
+        
+        $remainingDays = now()->diffInDays($expiryDate, false);
+        return $remainingDays > 0 ? $remainingDays : 0;
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -142,6 +199,14 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the digital accesses for this product
+     */
+    public function digitalAccesses()
+    {
+        return $this->hasMany(DigitalAccess::class);
     }
 
     // Cache methods
@@ -162,5 +227,25 @@ class Product extends Model
                 ->where('slug', $slug)
                 ->firstOrFail();
         });
+    }
+
+    /**
+     * Get the featured image URL with proper path
+     *
+     * @return string|null
+     */
+    public function getFeaturedImageUrlAttribute()
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+
+        // Jika sudah dimulai dengan / atau http, kembalikan apa adanya
+        if (str_starts_with($this->featured_image, '/') || str_starts_with($this->featured_image, 'http')) {
+            return $this->featured_image;
+        }
+        
+        // Tambahkan /storage/ prefix
+        return '/storage/' . $this->featured_image;
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+use App\Models\ProductGallery;
 
 class ProductController extends Controller
 {
@@ -70,70 +72,165 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+        $request->validate([
+            'name' => 'required',
             'price' => 'required|numeric|min:0',
-            'description' => 'required|string',
+            'description' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'is_active' => 'boolean',
             'featured_image' => 'required|image|max:2048',
+            'product_features' => 'nullable|array',
+            'product_values' => 'nullable|array',
+            'is_digital' => 'boolean',
+            'has_hidden_content' => 'boolean',
+            'hidden_content' => 'nullable|required_if:has_hidden_content,1',
+            'digital_file' => 'nullable|required_if:is_digital,1,has_hidden_content,0|file|max:25600', // 25MB max
+            'download_limit' => 'nullable|integer|min:0',
+            'access_days' => 'nullable|integer|min:0',
         ]);
 
+        // Process featured image
+        $featuredImagePath = null;
         if ($request->hasFile('featured_image')) {
-            $image = $request->file('featured_image');
-            $path = 'products/' . time() . '_' . $image->getClientOriginalName();
-            
-            $this->imageOptimizer->storeOptimized(
-                $image,
-                $path,
-                800, // width
-                600, // height
-                80   // quality
-            );
-            
-            $validated['featured_image'] = $path;
+            $featuredImagePath = $request->file('featured_image')->store('products/images', 'public');
+        }
+        
+        // Process digital file if product is digital
+        $digitalFilePath = null;
+        if ($request->is_digital && $request->hasFile('digital_file')) {
+            $digitalFilePath = $request->file('digital_file')->store('products/digital', 'local');
         }
 
-        $product = Product::create($validated);
+        $product = new Product();
+        $product->name = $request->name;
+        $product->slug = Str::slug($request->name);
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->category_id = $request->category_id;
+        $product->is_active = $request->is_active ?? false;
+        $product->featured_image = $featuredImagePath ? '/storage/' . $featuredImagePath : null;
+        $product->product_features = $request->product_features;
+        $product->product_values = $request->product_values;
+        $product->custom_url = $request->custom_url;
+        $product->demo_url = $request->demo_url;
         
-        return redirect()->route('products.show', $product->slug)
-            ->with('success', 'Product created successfully.');
+        // Set digital product fields
+        $product->is_digital = $request->is_digital ?? false;
+        $product->digital_file_path = $digitalFilePath;
+        $product->download_limit = $request->download_limit;
+        $product->access_days = $request->access_days;
+        
+        // Set hidden content fields
+        $product->has_hidden_content = $request->has_hidden_content ?? false;
+        if ($product->has_hidden_content) {
+            $product->hidden_content = $request->hidden_content;
+        }
+        
+        $product->save();
+
+        // Save product galleries if any
+        if ($request->hasFile('galleries')) {
+            foreach ($request->file('galleries') as $image) {
+                $imagePath = $image->store('products/galleries', 'public');
+                
+                ProductGallery::create([
+                    'product_id' => $product->id,
+                    'image' => '/storage/' . $imagePath,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+        $request->validate([
+            'name' => 'required',
             'price' => 'required|numeric|min:0',
-            'description' => 'required|string',
-            'featured_image' => 'nullable|image|max:2048',
+            'description' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'is_active' => 'boolean',
+            'featured_image' => 'required|image|max:2048',
+            'product_features' => 'nullable|array',
+            'product_values' => 'nullable|array',
+            'is_digital' => 'boolean',
+            'has_hidden_content' => 'boolean',
+            'hidden_content' => 'nullable|required_if:has_hidden_content,1',
+            'digital_file' => 'nullable|required_if:is_digital,1,has_hidden_content,0|file|max:25600', // 25MB max
+            'download_limit' => 'nullable|integer|min:0',
+            'access_days' => 'nullable|integer|min:0',
         ]);
 
+        // Process featured image if uploaded
         if ($request->hasFile('featured_image')) {
-            // Delete old image
+            // Delete old image if exists
             if ($product->featured_image) {
-                Storage::delete($product->featured_image);
+                $oldPath = str_replace('/storage/', '', $product->featured_image);
+                Storage::disk('public')->delete($oldPath);
             }
-
-            $image = $request->file('featured_image');
-            $path = 'products/' . time() . '_' . $image->getClientOriginalName();
             
-            $this->imageOptimizer->storeOptimized(
-                $image,
-                $path,
-                800,
-                600,
-                80
-            );
+            $featuredImagePath = $request->file('featured_image')->store('products/images', 'public');
+            $product->featured_image = '/storage/' . $featuredImagePath;
+        }
+        
+        // Process digital file if uploaded
+        if ($request->is_digital && $request->hasFile('digital_file')) {
+            // Delete old file if exists
+            if ($product->digital_file_path) {
+                Storage::delete($product->digital_file_path);
+            }
             
-            $validated['featured_image'] = $path;
+            $product->digital_file_path = $request->file('digital_file')->store('products/digital', 'local');
         }
 
-        $product->update($validated);
+        $product->name = $request->name;
+        // Only update slug if custom_url is not set
+        if (empty($request->custom_url)) {
+            $product->slug = Str::slug($request->name);
+        }
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->category_id = $request->category_id;
+        $product->is_active = $request->is_active ?? false;
+        $product->product_features = $request->product_features;
+        $product->product_values = $request->product_values;
+        $product->custom_url = $request->custom_url;
+        $product->demo_url = $request->demo_url;
         
-        return redirect()->route('products.show', $product->slug)
-            ->with('success', 'Product updated successfully.');
+        // Update digital product fields
+        $product->is_digital = $request->is_digital ?? false;
+        $product->download_limit = $request->download_limit;
+        $product->access_days = $request->access_days;
+        
+        // Update hidden content fields
+        $product->has_hidden_content = $request->has_hidden_content ?? false;
+        if ($product->has_hidden_content) {
+            $product->hidden_content = $request->hidden_content;
+        }
+        
+        $product->save();
+
+        // Save additional galleries if any
+        if ($request->hasFile('galleries')) {
+            foreach ($request->file('galleries') as $image) {
+                $imagePath = $image->store('products/galleries', 'public');
+                
+                ProductGallery::create([
+                    'product_id' => $product->id,
+                    'image' => '/storage/' . $imagePath,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 } 

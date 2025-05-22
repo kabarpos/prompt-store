@@ -133,6 +133,143 @@
                                     <InputError :message="form.errors.custom_url" class="mt-2" />
                                 </div>
 
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input
+                                            id="is_digital"
+                                            v-model="form.is_digital"
+                                            type="checkbox"
+                                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <Label for="is_digital">Produk Digital</Label>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                                        Centang jika produk ini adalah produk digital (e-book, dokumen, dll)
+                                    </p>
+                                </div>
+
+                                <div v-if="form.is_digital" class="space-y-4">
+                                    <div>
+                                        <Label for="digital_file">File Digital</Label>
+                                        <Input
+                                            id="digital_file"
+                                            type="file"
+                                            @input="handleDigitalFileChange"
+                                            class="mt-1 block w-full"
+                                            :required="form.is_digital && !form.has_hidden_content"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Upload file digital (PDF, ZIP, dll). Maksimal 25MB.
+                                        </p>
+                                        <InputError :message="form.errors.digital_file" class="mt-2" />
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex items-center space-x-2">
+                                            <input
+                                                id="has_hidden_content"
+                                                v-model="form.has_hidden_content"
+                                                type="checkbox"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            />
+                                            <Label for="has_hidden_content">Konten Tersembunyi</Label>
+                                        </div>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400">
+                                            Centang jika produk ini memiliki konten tersembunyi yang hanya terlihat setelah pembelian
+                                        </p>
+                                    </div>
+
+                                    <div v-if="form.has_hidden_content">
+                                        <Label for="hidden_content">Koleksi Prompt</Label>
+                                        
+                                        <div class="space-y-4 mt-2">
+                                            <div v-for="(prompt, index) in hiddenContentItems" :key="`prompt-${index}`" class="border p-4 rounded-md">
+                                                <div class="mb-3">
+                                                    <Label :for="`prompt-title-${index}`">Judul Prompt</Label>
+                                                    <Input
+                                                        :id="`prompt-title-${index}`"
+                                                        v-model="prompt.title"
+                                                        type="text"
+                                                        class="mt-1 block w-full"
+                                                        placeholder="Masukkan judul prompt"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div>
+                                                    <Label :for="`prompt-content-${index}`">Isi Prompt</Label>
+                                                    <Textarea
+                                                        :id="`prompt-content-${index}`"
+                                                        v-model="prompt.content"
+                                                        class="mt-1 block w-full h-[150px]"
+                                                        placeholder="Masukkan isi prompt"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div class="flex justify-end mt-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        @click="removePrompt(index)"
+                                                    >
+                                                        <X class="w-4 h-4 mr-1" /> Hapus Prompt
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                @click="addPrompt"
+                                                class="w-full"
+                                            >
+                                                <Plus class="w-4 h-4 mr-1" /> Tambah Prompt Baru
+                                            </Button>
+                                        </div>
+                                        
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Koleksi prompt ini hanya akan terlihat oleh pembeli setelah pesanan selesai
+                                        </p>
+                                        <InputError :message="form.errors.hidden_content" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <Label for="download_limit">Batas Unduhan</Label>
+                                        <Input
+                                            id="download_limit"
+                                            v-model="form.download_limit"
+                                            type="number"
+                                            min="0"
+                                            class="mt-1 block w-full"
+                                            placeholder="0 (tidak terbatas)"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Opsional: Batas unduhan file digital (0 = tidak terbatas)
+                                        </p>
+                                        <InputError :message="form.errors.download_limit" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <Label for="access_days">Masa Akses (hari)</Label>
+                                        <Input
+                                            id="access_days"
+                                            v-model="form.access_days"
+                                            type="number"
+                                            min="0"
+                                            class="mt-1 block w-full"
+                                            placeholder="0 (tidak terbatas)"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Opsional: Masa akses file dalam hari (0 = tidak terbatas)
+                                        </p>
+                                        <InputError :message="form.errors.access_days" class="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
                                 <div>
                                     <Label for="demo_url">URL Demo</Label>
                                     <Input
@@ -148,7 +285,7 @@
                                     <InputError :message="form.errors.demo_url" class="mt-2" />
                                 </div>
 
-                                <div>
+                                <div class="mt-4">
                                     <Label for="featured_image">Gambar Utama</Label>
                                     
                                     <div v-if="featuredImagePreview" class="mt-2 mb-2">
@@ -173,7 +310,7 @@
                                     <InputError :message="form.errors.featured_image" class="mt-2" />
                                 </div>
 
-                                <div>
+                                <div class="mt-4">
                                     <Label for="gallery">Galeri Gambar</Label>
                                     <Input
                                         id="gallery"
@@ -188,10 +325,8 @@
                                     </p>
                                     <InputError :message="form.errors.gallery" class="mt-2" />
                                 </div>
-                            </div>
 
-                            <div>
-                                <div class="mb-6">
+                                <div class="mb-6 mt-6">
                                     <Label>Fitur Produk</Label>
                                     <div class="space-y-2 mt-2">
                                         <div v-for="(feature, index) in productFeatures" :key="`feature-${index}`" class="flex items-start gap-2">
@@ -263,14 +398,16 @@
                                     </p>
                                 </div>
 
-                                <Label for="description">Deskripsi</Label>
-                                <Textarea
-                                    id="description"
-                                    v-model="form.description"
-                                    class="mt-1 block w-full h-[400px]"
-                                    required
-                                />
-                                <InputError :message="form.errors.description" class="mt-2" />
+                                <div>
+                                    <Label for="description">Deskripsi</Label>
+                                    <Textarea
+                                        id="description"
+                                        v-model="form.description"
+                                        class="mt-1 block w-full h-[400px]"
+                                        required
+                                    />
+                                    <InputError :message="form.errors.description" class="mt-2" />
+                                </div>
                             </div>
                         </div>
 
@@ -294,7 +431,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ArrowLeft, Loader2, X } from 'lucide-vue-next';
+import { ArrowLeft, Loader2, X, Plus } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -383,7 +520,13 @@ const form = useForm({
     gallery: [],
     custom_url: '',
     product_code: '',
-    demo_url: ''
+    demo_url: '',
+    is_digital: false,
+    digital_file: null,
+    download_limit: 0,
+    access_days: 0,
+    has_hidden_content: false,
+    hidden_content: ''
 });
 
 // Fungsi untuk preview gambar utama
@@ -409,22 +552,69 @@ const handleGalleryImagesChange = (event) => {
     }
 };
 
+const handleDigitalFileChange = (event) => {
+    const file = event.target.files[0];
+    form.digital_file = file;
+};
+
 const submit = () => {
     loading.value = true;
     
+    // Konversi hiddenContentItems ke JSON untuk disimpan
+    if (form.has_hidden_content && hiddenContentItems.value.length > 0) {
+        // Filter item yang kosong
+        const validItems = hiddenContentItems.value.filter(item => 
+            item.title.trim() !== '' || item.content.trim() !== ''
+        );
+        
+        if (validItems.length > 0) {
+            form.hidden_content = validItems;
+        } else {
+            form.hidden_content = '';
+        }
+    } else {
+        form.hidden_content = '';
+    }
+    
     const formData = new FormData();
-    formData.append('name', form.name);
-    formData.append('description', form.description);
-    formData.append('price', form.price);
-    formData.append('custom_url', form.custom_url);
-    formData.append('demo_url', form.demo_url);
+    formData.append("name", form.name);
+    formData.append("description", form.description);
+    formData.append("price", form.price);
     
     if (form.category_id) {
-        formData.append('category_id', form.category_id);
+        formData.append("category_id", form.category_id);
+    }
+    
+    if (form.custom_url) {
+        formData.append("custom_url", form.custom_url);
+    }
+    
+    if (form.demo_url) {
+        formData.append("demo_url", form.demo_url);
+    }
+    
+    formData.append("is_active", form.is_active ? '1' : '0');
+    formData.append("is_digital", form.is_digital ? '1' : '0');
+    formData.append("has_hidden_content", form.has_hidden_content ? '1' : '0');
+    
+    // Konversi hidden_content menjadi JSON string jika berupa array
+    if (Array.isArray(form.hidden_content)) {
+        formData.append("hidden_content", JSON.stringify(form.hidden_content));
+    } else {
+        formData.append("hidden_content", form.hidden_content || '');
+    }
+    
+    if (form.is_digital) {
+        formData.append("download_limit", String(form.download_limit || 0));
+        formData.append("access_days", String(form.access_days || 0));
+        
+        if (form.digital_file && !form.has_hidden_content) {
+            formData.append("digital_file", form.digital_file);
+        }
     }
     
     if (form.featured_image) {
-        formData.append('featured_image', form.featured_image);
+        formData.append("featured_image", form.featured_image);
     }
     
     if (form.gallery && form.gallery.length > 0) {
@@ -493,6 +683,21 @@ const removeValue = (index) => {
     // Pastikan selalu ada minimal satu field
     if (productValues.value.length === 0) {
         productValues.value.push({ text: '' });
+    }
+};
+
+// Repeater untuk hidden content
+const hiddenContentItems = ref([{ title: '', content: '' }]);
+
+const addPrompt = () => {
+    hiddenContentItems.value.push({ title: '', content: '' });
+};
+
+const removePrompt = (index) => {
+    hiddenContentItems.value.splice(index, 1);
+    // Pastikan selalu ada minimal satu field
+    if (hiddenContentItems.value.length === 0) {
+        hiddenContentItems.value.push({ title: '', content: '' });
     }
 };
 </script>

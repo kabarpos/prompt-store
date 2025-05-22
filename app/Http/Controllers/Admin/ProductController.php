@@ -165,6 +165,15 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         try {
+            // TAMBAHKAN LOG DEBUG DI AWAL METHOD
+            \Log::debug('UPDATE PRODUCT REQUEST:', [
+                'is_digital' => $request->is_digital,
+                'has_hidden_content' => $request->has_hidden_content,
+                'hidden_content_length' => strlen($request->hidden_content ?? ''),
+                'digital_file' => $request->hasFile('digital_file') ? 'ADA FILE' : 'TIDAK ADA FILE',
+                'all_data' => $request->all()
+            ]);
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'category_id' => 'nullable|exists:categories,id',
@@ -177,25 +186,29 @@ class ProductController extends Controller
                 'product_features' => 'nullable|json',
                 'product_values' => 'nullable|json',
                 'is_active' => 'nullable|in:0,1,true,false',
+                // Tambahan validasi untuk digital product
+                'is_digital' => 'nullable|boolean',
+                'has_hidden_content' => 'nullable|boolean',
+                'hidden_content' => 'nullable|string',
+                'download_limit' => 'nullable|integer|min:0',
+                'access_days' => 'nullable|integer|min:0',
+                'digital_file' => 'nullable|file|max:25600', // Max 25MB
             ]);
 
-            $data = [
-                'name' => $request->name,
-                'category_id' => $request->category_id ?: null,
-                'price' => $request->price,
-                'description' => $request->description,
-                'demo_url' => $request->demo_url,
-                'product_features' => $request->product_features ? json_decode($request->product_features) : null,
-                'product_values' => $request->product_values ? json_decode($request->product_values) : null,
-                'is_active' => $request->has('is_active') ? (bool)$request->is_active : $product->is_active,
-            ];
+            // TANGKAP FIELD DIGITAL EXPLICITLY
+            $data = $request->all();
             
-            // Debug nilai is_active
-            \Log::info('Update produk - is_active value:', [
-                'request_value' => $request->is_active, 
-                'type' => gettype($request->is_active),
-                'processed_value' => $data['is_active']
-            ]);
+            // PASTIKAN BOOLEAN DIPROSES BENAR
+            $data['is_digital'] = filter_var($request->is_digital, FILTER_VALIDATE_BOOLEAN);
+            $data['has_hidden_content'] = filter_var($request->has_hidden_content, FILTER_VALIDATE_BOOLEAN);
+            $data['is_active'] = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
+            
+            // TANGANI FILE DIGITAL TERLEBIH DAHULU
+            if ($request->hasFile('digital_file')) {
+                $path = $request->file('digital_file')->store('products/digital', 'private');
+                $data['digital_file_path'] = $path;
+                \Log::debug("File digital tersimpan: {$path}");
+            }
             
             // Debug nilai custom_url saat ini dan di request
             \Log::info('Update produk - custom_url:', [
@@ -233,8 +246,44 @@ class ProductController extends Controller
                 $data['featured_image'] = $request->file('featured_image')->store('products', 'public');
             }
 
+            // Log data sebelum update
+            \Log::debug('DATA YANG AKAN DIUPDATE:', [
+                'is_digital' => $data['is_digital'],
+                'has_hidden_content' => $data['has_hidden_content'],
+                'hidden_content' => $data['hidden_content'] ? 'Ada isi' : 'Kosong',
+                'download_limit' => $data['download_limit'] ?? 0,
+                'access_days' => $data['access_days'] ?? 0,
+                'digital_file_path' => $data['digital_file_path'] ?? 'Tidak ada file baru'
+            ]);
+            
             // Update produk
             $product->update($data);
+            
+            // Verifikasi data tersimpan
+            $product->refresh();
+            \Log::debug('SETELAH UPDATE - VERIFIKASI DATA TERSIMPAN:', [
+                'is_digital' => $product->is_digital,
+                'has_hidden_content' => $product->has_hidden_content,
+                'hidden_content' => $product->hidden_content ? 'Ada isi' : 'Kosong',
+                'download_limit' => $product->download_limit,
+                'access_days' => $product->access_days,
+                'digital_file_path' => $product->digital_file_path
+            ]);
+
+            // SOLUSI TERAKHIR - UPDATE DATABASE LANGSUNG
+            try {
+                \DB::table('products')->where('id', $product->id)->update([
+                    'is_digital' => $data['is_digital'] ? 1 : 0,
+                    'has_hidden_content' => $data['has_hidden_content'] ? 1 : 0,
+                    'hidden_content' => $data['hidden_content'] ?? null,
+                    'download_limit' => $data['download_limit'] ?? 0,
+                    'access_days' => $data['access_days'] ?? 0
+                ]);
+                
+                \Log::debug("Update database langsung berhasil");
+            } catch (\Exception $e) {
+                \Log::error("GAGAL UPDATE DATABASE LANGSUNG: " . $e->getMessage());
+            }
 
             // Proses gambar galeri jika ada
             if ($request->hasFile('gallery')) {
@@ -263,6 +312,9 @@ class ProductController extends Controller
                 ->with('success', 'Produk berhasil diperbarui');
                 
         } catch (\Exception $e) {
+            \Log::error('ERROR UPDATE PRODUK: ' . $e->getMessage());
+            \Log::error('STACK TRACE: ' . $e->getTraceAsString());
+            
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,

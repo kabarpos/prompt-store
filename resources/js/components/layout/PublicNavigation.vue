@@ -157,9 +157,6 @@ onUnmounted(() => {
 
 const navigationItems = [
   { name: 'beranda', to: '/', text: 'Beranda' },
-  { name: 'layanan', to: '/services', text: 'Layanan' },
-  { name: 'produk', to: '/products', text: 'Produk' },
-  { name: 'tentang', to: '/about', text: 'Tentang' },
   { name: 'kontak', to: '/contact', text: 'Kontak' }
 ]
 

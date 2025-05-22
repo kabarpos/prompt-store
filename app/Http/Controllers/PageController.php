@@ -106,16 +106,23 @@ class PageController extends Controller
      */
     public function home()
     {
-        return Inertia::render('public/home/Index');
+        $products = \App\Models\Product::with(['category', 'gallery'])
+            ->where('is_active', true)
+            ->latest()
+            ->take(10)
+            ->get();
+        
+        $categories = \App\Models\Category::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('public/home/Index', [
+            'products' => $products,
+            'categories' => $categories
+        ]);
     }
 
-    /**
-     * Display the about page.
-     */
-    public function about()
-    {
-        return Inertia::render('public/about/Index');
-    }
+    // About page removed
 
     /**
      * Display the contact page.

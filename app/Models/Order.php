@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\OrderCompletedEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,6 +45,18 @@ class Order extends Model
         'total_amount' => 'decimal:2',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($order) {
+            // Jika status berubah menjadi completed, trigger event OrderCompleted
+            if ($order->isDirty('status') && $order->status === self::STATUS_COMPLETED) {
+                event(new OrderCompletedEvent($order));
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -70,6 +83,14 @@ class Order extends Model
     public function documents()
     {
         return $this->hasMany(OrderDocument::class);
+    }
+
+    /**
+     * Get the digital accesses for this order
+     */
+    public function digitalAccesses()
+    {
+        return $this->hasMany(DigitalAccess::class);
     }
 
     /**
@@ -173,6 +194,30 @@ class Order extends Model
         $this->total_amount = $this->total_after_discount + $this->admin_fee;
         
         return $this;
+    }
+
+    /**
+     * Check if order has any digital products
+     */
+    public function hasDigitalProducts()
+    {
+        return $this->items()
+            ->whereHas('product', function($query) {
+                $query->where('is_digital', true);
+            })
+            ->exists();
+    }
+
+    /**
+     * Get all digital products in this order
+     */
+    public function getDigitalProducts()
+    {
+        return $this->items()
+            ->whereHas('product', function($query) {
+                $query->where('is_digital', true);
+            })
+            ->get();
     }
 
     public function orderItems()

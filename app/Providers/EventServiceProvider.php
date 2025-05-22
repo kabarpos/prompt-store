@@ -18,10 +18,14 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         Registered::class => [
-            // SendEmailVerificationNotification::class, // Dinonaktifkan untuk menggunakan verifikasi email kustom
+            SendEmailVerificationNotification::class,
         ],
         Verified::class => [
             ActivateUserAfterEmailVerified::class,
+        ],
+        \App\Events\OrderCompletedEvent::class => [
+            \App\Listeners\CreateOrderDocumentsWhenCompleted::class,
+            \App\Listeners\CreateDigitalAccessWhenOrderCompleted::class,
         ],
     ];
 

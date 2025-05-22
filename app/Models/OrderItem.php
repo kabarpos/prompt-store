@@ -31,6 +31,22 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    
+    /**
+     * Get the digital access for this order item
+     */
+    public function digitalAccess()
+    {
+        return $this->hasOne(DigitalAccess::class);
+    }
+    
+    /**
+     * Check if this order item is a digital product
+     */
+    public function isDigitalProduct()
+    {
+        return $this->product && $this->product->is_digital;
+    }
 
     protected static function boot()
     {

@@ -459,10 +459,20 @@ class OrderController extends Controller
             abort(403);
         }
         
-        $order->load(['items.product', 'payment.paymentMethod']);
+        // Load data dengan relasi yang lebih lengkap
+        $order->load([
+            'items.product', 
+            'payment.paymentMethod'
+        ]);
+        
+        // Cek apakah order memiliki produk digital
+        $hasDigitalProducts = $order->items->contains(function ($item) {
+            return $item->product && $item->product->is_digital;
+        });
         
         return Inertia::render('user/orders/Show', [
-            'order' => $order
+            'order' => $order,
+            'hasDigitalProducts' => $hasDigitalProducts,
         ]);
     }
 }

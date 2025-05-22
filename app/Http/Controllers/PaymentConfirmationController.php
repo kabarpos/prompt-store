@@ -208,7 +208,10 @@ class PaymentConfirmationController extends Controller
         $pendingOrders = Order::with(['payment.paymentMethod'])
             ->where('user_id', auth()->id())
             ->whereHas('payment', function($query) {
-                $query->where('status', 'pending');
+                $query->where('status', 'pending')
+                      ->whereHas('paymentMethod', function($q) {
+                          $q->where('type', 'bank_transfer');
+                      });
             })
             ->latest()
             ->get();

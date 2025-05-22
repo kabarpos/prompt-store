@@ -131,6 +131,144 @@
                                     <InputError :message="form.errors.custom_url" class="mt-2" />
                                 </div>
 
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input
+                                            id="is_digital"
+                                            v-model="form.is_digital"
+                                            type="checkbox"
+                                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <Label for="is_digital">Produk Digital</Label>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                                        Centang jika produk ini adalah produk digital (e-book, dokumen, dll)
+                                    </p>
+
+                                    <div v-if="props.product.digital_file_path" class="mt-2 text-xs text-slate-600 dark:text-slate-400">
+                                        <span class="font-medium">File digital sudah tersedia.</span> Upload file baru untuk mengganti.
+                                    </div>
+                                </div>
+
+                                <div v-if="form.is_digital" class="space-y-4">
+                                    <div>
+                                        <Label for="digital_file">File Digital</Label>
+                                        <Input
+                                            id="digital_file"
+                                            type="file"
+                                            @input="handleDigitalFileChange"
+                                            class="mt-1 block w-full"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Upload file digital (PDF, ZIP, dll). Maksimal 25MB.
+                                        </p>
+                                        <InputError :message="form.errors.digital_file" class="mt-2" />
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex items-center space-x-2">
+                                            <input
+                                                id="has_hidden_content"
+                                                v-model="form.has_hidden_content"
+                                                type="checkbox"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            />
+                                            <Label for="has_hidden_content">Konten Tersembunyi</Label>
+                                        </div>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400">
+                                            Centang jika produk ini memiliki konten tersembunyi yang hanya terlihat setelah pembelian
+                                        </p>
+                                    </div>
+
+                                    <div v-if="form.has_hidden_content">
+                                        <Label for="hidden_content">Koleksi Prompt</Label>
+                                        
+                                        <div class="space-y-4 mt-2">
+                                            <div v-for="(prompt, index) in hiddenContentItems" :key="`prompt-${index}`" class="border p-4 rounded-md">
+                                                <div class="mb-3">
+                                                    <Label :for="`prompt-title-${index}`">Judul Prompt</Label>
+                                                    <Input
+                                                        :id="`prompt-title-${index}`"
+                                                        v-model="prompt.title"
+                                                        type="text"
+                                                        class="mt-1 block w-full"
+                                                        placeholder="Masukkan judul prompt"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div>
+                                                    <Label :for="`prompt-content-${index}`">Isi Prompt</Label>
+                                                    <Textarea
+                                                        :id="`prompt-content-${index}`"
+                                                        v-model="prompt.content"
+                                                        class="mt-1 block w-full h-[150px]"
+                                                        placeholder="Masukkan isi prompt"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div class="flex justify-end mt-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        @click="removePrompt(index)"
+                                                    >
+                                                        <X class="w-4 h-4 mr-1" /> Hapus Prompt
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                @click="addPrompt"
+                                                class="w-full"
+                                            >
+                                                <Plus class="w-4 h-4 mr-1" /> Tambah Prompt Baru
+                                            </Button>
+                                        </div>
+                                        
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Koleksi prompt ini hanya akan terlihat oleh pembeli setelah pesanan selesai
+                                        </p>
+                                        <InputError :message="form.errors.hidden_content" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <Label for="download_limit">Batas Unduhan</Label>
+                                        <Input
+                                            id="download_limit"
+                                            v-model="form.download_limit"
+                                            type="number"
+                                            min="0"
+                                            class="mt-1 block w-full"
+                                            placeholder="0 (tidak terbatas)"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Opsional: Batas unduhan file digital (0 = tidak terbatas)
+                                        </p>
+                                        <InputError :message="form.errors.download_limit" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <Label for="access_days">Masa Akses (hari)</Label>
+                                        <Input
+                                            id="access_days"
+                                            v-model="form.access_days"
+                                            type="number"
+                                            min="0"
+                                            class="mt-1 block w-full"
+                                            placeholder="0 (tidak terbatas)"
+                                        />
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                            Opsional: Masa akses file dalam hari (0 = tidak terbatas)
+                                        </p>
+                                        <InputError :message="form.errors.access_days" class="mt-2" />
+                                    </div>
+                                </div>
+
                                 <div>
                                     <Label for="demo_url">URL Demo</Label>
                                     <Input
@@ -146,27 +284,7 @@
                                     <InputError :message="form.errors.demo_url" class="mt-2" />
                                 </div>
 
-                                <div class="flex items-center gap-3 mt-6">
-                                    <div class="flex-1">
-                                        <Label for="is_active" class="mb-3">Status Produk</Label>
-                                        <div class="flex items-center gap-2">
-                                            <Switch 
-                                                id="is_active" 
-                                                v-model="form.is_active"
-                                                class="peer data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-200 dark:data-[state=unchecked]:bg-gray-700"
-                                            />
-                                            <Label for="is_active">{{ form.is_active ? 'Aktif' : 'Tidak Aktif' }}</Label>
-                                        </div>
-                                        <Badge 
-                                            variant="outline" 
-                                            :class="form.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-800/20 dark:border-green-300/20 mt-2' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-800/20 dark:border-gray-300/20 mt-2'"
-                                        >
-                                            {{ form.is_active ? 'Produk akan ditampilkan di website' : 'Produk tidak akan ditampilkan di website' }}
-                                        </Badge>
-                                    </div>
-                                </div>
-
-                                <div>
+                                <div class="mt-4">
                                     <Label for="featured_image">Gambar Utama</Label>
                                     <div class="mt-2">
                                         <!-- Tampilkan gambar utama saat ini atau preview -->
@@ -196,7 +314,7 @@
                                     <InputError :message="form.errors.featured_image" class="mt-2" />
                                 </div>
 
-                                <div>
+                                <div class="mt-4">
                                     <Label>Galeri Gambar</Label>
                                     <div class="grid grid-cols-4 gap-4 mt-2">
                                         <div
@@ -230,6 +348,26 @@
                                         Opsional: Tambahkan gambar baru ke galeri produk. Format yang didukung: JPEG, PNG, JPG, GIF. Maksimal 2MB per gambar.
                                     </p>
                                     <InputError :message="form.errors.gallery" class="mt-2" />
+                                </div>
+
+                                <div class="flex items-center gap-3 mt-6">
+                                    <div class="flex-1">
+                                        <Label for="is_active" class="mb-3">Status Produk</Label>
+                                        <div class="flex items-center gap-2">
+                                            <Switch 
+                                                id="is_active" 
+                                                v-model="form.is_active"
+                                                class="peer data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-200 dark:data-[state=unchecked]:bg-gray-700"
+                                            />
+                                            <Label for="is_active">{{ form.is_active ? 'Aktif' : 'Tidak Aktif' }}</Label>
+                                        </div>
+                                        <Badge 
+                                            variant="outline" 
+                                            :class="form.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-800/20 dark:border-green-300/20 mt-2' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-800/20 dark:border-gray-300/20 mt-2'"
+                                        >
+                                            {{ form.is_active ? 'Produk akan ditampilkan di website' : 'Produk tidak akan ditampilkan di website' }}
+                                        </Badge>
+                                    </div>
                                 </div>
                             </div>
 
@@ -351,7 +489,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ArrowLeft, Loader2, X, Trash2 } from 'lucide-vue-next';
+import { ArrowLeft, Loader2, X, Trash2, Plus } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -524,6 +662,38 @@ const initProductValues = () => {
 const productFeatures = ref(initProductFeatures());
 const productValues = ref(initProductValues());
 
+// Inisialisasi hiddenContentItems dari hidden_content yang ada
+const hiddenContentItems = ref([]);
+
+// Konversi hidden_content dari JSON/array ke hiddenContentItems
+onMounted(() => {
+    if (form.hidden_content && Array.isArray(form.hidden_content)) {
+        hiddenContentItems.value = form.hidden_content.map(item => ({
+            title: item.title || 'Prompt',
+            content: item.content || ''
+        }));
+    } else if (form.hidden_content && typeof form.hidden_content === 'string') {
+        // Untuk kompatibilitas dengan data lama
+        hiddenContentItems.value = [{ title: 'Prompt', content: form.hidden_content }];
+    } else {
+        // Default jika kosong
+        hiddenContentItems.value = [{ title: 'Prompt', content: '' }];
+    }
+});
+
+// Fungsi untuk mengelola prompt
+const addPrompt = () => {
+    hiddenContentItems.value.push({ title: '', content: '' });
+};
+
+const removePrompt = (index) => {
+    hiddenContentItems.value.splice(index, 1);
+    // Pastikan selalu ada minimal satu prompt
+    if (hiddenContentItems.value.length === 0) {
+        hiddenContentItems.value.push({ title: '', content: '' });
+    }
+};
+
 const form = useForm({
     name: props.product.name,
     category_id: props.product.category_id,
@@ -535,6 +705,12 @@ const form = useForm({
     demo_url: props.product.demo_url || '',
     product_code: props.product.product_code,
     is_active: props.product.is_active,
+    is_digital: props.product.is_digital || false,
+    digital_file: null,
+    download_limit: props.product.download_limit || 0,
+    access_days: props.product.access_days || 0,
+    has_hidden_content: props.product.has_hidden_content || false,
+    hidden_content: props.product.hidden_content || '',
     _method: 'PUT' // Metode HTTP yang benar untuk update
 });
 
@@ -559,6 +735,12 @@ const handleGalleryImagesChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
         newGalleryImages.value = Array.from(event.target.files);
     }
+};
+
+// Fungsi untuk menangani file digital
+const handleDigitalFileChange = (event) => {
+    const file = event.target.files[0];
+    form.digital_file = file;
 };
 
 // URLs untuk gambar yang ada
@@ -593,25 +775,49 @@ const removeValue = (index) => {
 };
 
 const submit = () => {
+    // DEBUG DATA YANG DIKIRIM
+    console.log('======= SUBMIT FORM PRODUK =======');
+    console.log('is_digital:', form.is_digital, typeof form.is_digital);
+    console.log('digital_file:', form.digital_file);
+    console.log('has_hidden_content:', form.has_hidden_content, typeof form.has_hidden_content);
+    
+    // Konversi hiddenContentItems ke JSON untuk disimpan
+    if (form.has_hidden_content && hiddenContentItems.value.length > 0) {
+        // Filter item yang kosong
+        const validItems = hiddenContentItems.value.filter(item => 
+            item.title.trim() !== '' || item.content.trim() !== ''
+        );
+        
+        if (validItems.length > 0) {
+            form.hidden_content = validItems;
+        } else {
+            form.hidden_content = '';
+        }
+    } else {
+        form.hidden_content = '';
+    }
+    
+    console.log('hidden_content:', form.hidden_content);
+    
     loading.value = true;
     
-    // Debug log
-    console.log('Form is_active sebelum dikirim:', form.is_active, typeof form.is_active);
-    console.log('Form custom_url sebelum dikirim:', form.custom_url);
-    
     const formData = new FormData();
+    
+    // APPEND SEMUA DATA EXPLICIT 
     formData.append("_method", "PUT");
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
     
+    if (form.category_id) {
+        formData.append("category_id", form.category_id);
+    }
+    
     // Hanya kirim custom_url jika memiliki nilai (tidak kosong)
-    // Ini akan membantu controller untuk mengetahui bahwa field memang dikirim
     if (form.custom_url !== null && form.custom_url !== undefined && form.custom_url.trim() !== '') {
         formData.append("custom_url", form.custom_url.trim());
     } else {
         // Jika kosong, kirim empty string agar controller tahu field ini dikirim tapi kosong
-        // Sehingga controller bisa mempertahankan nilai lama
         formData.append("custom_url", '');
     }
     
@@ -620,13 +826,39 @@ const submit = () => {
         formData.append("demo_url", form.demo_url);
     }
     
-    // Pastikan is_active selalu disertakan dan konversi ke string "1" atau "0"
-    // FormData hanya menerima string, jadi kita perlu mengkonversi Boolean
-    const isActiveValue = form.is_active ? "1" : "0";
-    formData.append("is_active", isActiveValue);
+    // PASTIKAN is_active selalu disertakan dan konversi ke string "1" atau "0"
+    formData.append("is_active", form.is_active ? "1" : "0");
     
-    if (form.category_id) {
-        formData.append("category_id", form.category_id);
+    // PASTIKAN FIELD DIGITAL PRODUCT DIAPPEND DENGAN BENAR
+    formData.append("is_digital", form.is_digital ? "1" : "0");
+    formData.append("download_limit", String(form.download_limit || 0));
+    formData.append("access_days", String(form.access_days || 0));
+    
+    // FILE UPLOAD
+    if (form.digital_file) {
+        formData.append("digital_file", form.digital_file);
+        console.log('Appending digital file:', form.digital_file.name);
+    }
+    
+    // HIDDEN CONTENT - SELALU KIRIM MESKI CHECKBOX TIDAK DICENTANG
+    formData.append("has_hidden_content", form.has_hidden_content ? "1" : "0");
+    
+    // Konversi hidden_content menjadi JSON string jika berupa array
+    if (Array.isArray(form.hidden_content)) {
+        formData.append("hidden_content", JSON.stringify(form.hidden_content));
+    } else {
+        formData.append("hidden_content", form.hidden_content || '');
+    }
+    
+    // Menambahkan product_features dan product_values sebagai JSON
+    if (productFeatures.value.length > 0) {
+        const features = productFeatures.value.filter(f => f.text.trim() !== '').map(f => f.text);
+        formData.append("product_features", JSON.stringify(features));
+    }
+    
+    if (productValues.value.length > 0) {
+        const values = productValues.value.filter(v => v.text.trim() !== '').map(v => v.text);
+        formData.append("product_values", JSON.stringify(values));
     }
     
     if (form.featured_image && typeof form.featured_image !== 'string') {
@@ -640,27 +872,24 @@ const submit = () => {
     }
     
     // Tambahkan gallery_ids yang akan dipertahankan
-    form.gallery.forEach((item) => {
-        formData.append("gallery_ids[]", item.id);
-    });
-    
-    // Menambahkan product_features dan product_values sebagai JSON
-    if (productFeatures.value.length > 0) {
-        const features = productFeatures.value.filter(f => f.text.trim() !== '').map(f => f.text);
-        formData.append("product_features", JSON.stringify(features));
+    if (form.gallery && Array.isArray(form.gallery)) {
+        form.gallery.forEach((item) => {
+            if (item && item.id) {
+                formData.append("gallery_ids[]", item.id);
+            }
+        });
     }
     
-    if (productValues.value.length > 0) {
-        const values = productValues.value.filter(v => v.text.trim() !== '').map(v => v.text);
-        formData.append("product_values", JSON.stringify(values));
+    // LOG DATA YANG AKAN DIKIRIM
+    console.log('FORMDATA CONTENT:');
+    for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value instanceof File ? value.name : value}`);
     }
-    
-    // Debug log untuk memeriksa isi formData
-    console.log('Kirim nilai is_active:', isActiveValue);
     
     router.post(route("admin.products.update", props.product.id), formData, {
-        onSuccess: () => {
+        onSuccess: (page) => {
             loading.value = false;
+            console.log('SUKSES:', page);
             toast.success("Produk berhasil diperbarui");
             newGalleryImages.value = [];
             showDeleteConfirm.value = false;
@@ -668,8 +897,8 @@ const submit = () => {
         },
         onError: (errors) => {
             loading.value = false;
-            toast.error("Gagal memperbarui produk");
-            console.error(errors);
+            console.error('ERROR UPDATE PRODUK:', errors);
+            toast.error("Gagal memperbarui produk: " + (errors.message || 'Unknown error'));
         },
         forceFormData: true,
     });

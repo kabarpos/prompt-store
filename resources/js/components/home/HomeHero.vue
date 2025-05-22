@@ -1,5 +1,5 @@
 <template>
-  <section class="relative min-h-screen flex items-center overflow-hidden bg-background">
+  <section class="relative min-h-screen flex items-center overflow-hidden bg-background dark:bg-[#0f172a]">
     <!-- Background Patterns/Shapes -->
     <div class="absolute inset-0 z-0 overflow-hidden">
       <!-- Modern Grid Pattern -->
@@ -38,64 +38,151 @@
     <!-- Content -->
     <div class="relative z-10 w-full py-20 md:py-32">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <!-- Left Column - Text Content -->
-          <div class="max-w-xl" data-aos="fade-right" data-aos-duration="1000">
-            <div class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/20 backdrop-blur-sm mb-6 text-primary-600 dark:text-primary text-sm font-medium">
-              <span class="flex h-2 w-2 rounded-full bg-primary-600 dark:bg-primary mr-2"></span>
-              Agency Digital Marketing Terpercaya
+        <!-- Main Hero Content -->
+        <div class="text-center mb-16">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+            AI Prompt Marketplace
+          </h1>
+          <p class="text-xl mb-8 text-slate-600 dark:text-gray-300 max-w-3xl mx-auto">
+            Explore 190k expert-crafted prompt templates
+          </p>
+          <p class="text-lg mb-10 text-primary-600 dark:text-primary-400">
+            Midjourney, ChatGPT, DALL-E, FLUX & more
+          </p>
+          
+          <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button
+              class="bg-orange-100 hover:bg-orange-200 dark:bg-orange-900/30 dark:hover:bg-orange-800/40 text-orange-800 dark:text-orange-300 px-8 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-200 font-medium"
+            >
+              Explore prompts
+            </button>
+            <button
+              class="bg-slate-800/80 hover:bg-slate-700 text-white dark:bg-slate-800 dark:hover:bg-slate-700 px-8 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-200 font-medium"
+            >
+              Sell prompts
+            </button>
+          </div>
+          
+          <!-- Reviews & Featured In -->
+          <div class="mt-12">
+            <!-- Stars & Reviews -->
+            <div class="flex justify-center items-center mb-6">
+              <div class="flex">
+                <StarIcon class="h-5 w-5 text-yellow-400" v-for="i in 5" :key="i" />
+              </div>
+              <span class="ml-2 text-sm text-slate-500 dark:text-slate-400">
+                19,500+ five star reviews
+              </span>
+              <span class="mx-4 text-slate-300 dark:text-slate-700">|</span>
+              <div class="flex items-center">
+                <ShieldCheckIcon class="h-5 w-5 text-green-500 mr-1" />
+                <span class="text-sm text-slate-500 dark:text-slate-400">
+                  Trusted by 300,000+ users
+                </span>
+              </div>
             </div>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-slate-900 dark:text-foreground leading-tight">
-              Buat Bisnis Anda <span class="relative inline-block">
-                <span class="relative z-10">Makin Dikenal</span>
-                <span class="absolute bottom-2 left-0 w-full h-3 bg-primary-100 dark:bg-green-500"></span>
-              </span> Luas
-            </h1>
-            <p class="text-lg mb-8 text-slate-600 dark:text-muted-foreground leading-relaxed">
-              Kami hadir untuk membantu bisnis Anda berkembang, 
-              melalui jasa digital marketing yang profesional dan tepat sasaran.
-            </p>
-            <div class="flex flex-wrap gap-4">
-              <button
-                class="bg-primary-600 hover:bg-primary-700 dark:bg-primary dark:hover:bg-primary-600 text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-primary-600/25 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-medium"
-                @click="$router.push({ name: 'services' })"
-              >
-                <span>Cek Layanan Kami</span>
-                <ArrowRightIcon class="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </button>
-              <button
-                class="border-2 border-primary-600 dark:border-primary text-primary-600 dark:text-primary hover:bg-primary-50 dark:hover:bg-primary/10 px-8 py-3.5 rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-medium group"
-                @click="$router.push({ name: 'contact' })"
-              >
-                <PhoneIcon class="w-5 h-5" />
-                <span>Konsultasi Gratis</span>
-              </button>
+            
+            <!-- Featured In -->
+            <div class="mt-8">
+              <p class="text-xs uppercase text-slate-500 dark:text-slate-400 mb-4">Featured in</p>
+              <div class="flex flex-wrap justify-center gap-6 opacity-70">
+                <img src="/images/press/theverge.svg" alt="The Verge" class="h-6 grayscale" />
+                <img src="/images/press/wired.svg" alt="Wired" class="h-6 grayscale" />
+                <img src="/images/press/fastcompany.svg" alt="Fast Company" class="h-6 grayscale" />
+                <img src="/images/press/financial-times.svg" alt="Financial Times" class="h-6 grayscale" />
+                <img src="/images/press/techcrunch.svg" alt="TechCrunch" class="h-6 grayscale" />
+                <img src="/images/press/wsj.svg" alt="Wall Street Journal" class="h-6 grayscale" />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+          <!-- Card 1: Creator Communities -->
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div class="absolute top-2 right-2 px-2 py-1 bg-slate-900/70 text-white text-xs rounded">New feature</div>
+            <div class="p-6 flex flex-col h-full">
+              <img src="/images/home/communities.jpg" alt="Creator Communities" class="w-full h-40 object-cover rounded mb-4" />
+              <h3 class="text-xl font-bold text-white mt-2">Creator Communities</h3>
+              <p class="text-slate-300 text-sm mt-2">Chat with thousands of other AI creators</p>
             </div>
           </div>
           
-          <!-- Right Column - Image -->
-          <div class="relative" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary-100 to-blue-100 dark:from-primary/20 dark:to-blue-500/20 rounded-2xl transform rotate-3"></div>
-            <div class="relative bg-white dark:bg-card backdrop-blur-sm p-2 rounded-2xl shadow-2xl border border-slate-200 dark:border-border">
-              <img 
-                src="/images/hero-dashboard.svg" 
-                alt="Dashboard Preview" 
-                class="w-full h-auto rounded-xl"
-              />
-              <!-- Floating Elements -->
-              <div class="absolute -top-6 -right-6 bg-white dark:bg-card p-3 rounded-lg shadow-lg flex items-center">
-                <div class="bg-success-500 h-3 w-3 rounded-full mr-2"></div>
-                <span class="text-sm font-medium text-slate-900 dark:text-foreground">Bisnis Meningkat 120%</span>
-              </div>
-              <div class="absolute -bottom-6 -left-6 bg-white dark:bg-card p-3 rounded-lg shadow-lg">
-                <div class="flex items-center">
-                  <div class="flex -space-x-2 mr-2">
-                    <div class="h-6 w-6 rounded-full bg-primary-600 dark:bg-primary"></div>
-                    <div class="h-6 w-6 rounded-full bg-blue-600 dark:bg-blue-500"></div>
-                    <div class="h-6 w-6 rounded-full bg-success-500"></div>
-                  </div>
-                  <span class="text-sm font-medium text-slate-900 dark:text-foreground">Tim Ahli</span>
+          <!-- Card 2: Explore the Marketplace -->
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div class="p-6 flex flex-col h-full">
+              <img src="/images/home/marketplace.jpg" alt="Marketplace" class="w-full h-40 object-cover rounded mb-4" />
+              <h3 class="text-xl font-bold text-white mt-2">Explore the Marketplace</h3>
+              <p class="text-slate-300 text-sm mt-2">Browse 190k+ quality, tested prompts</p>
+            </div>
+          </div>
+          
+          <!-- Card 3: Sell Your Prompts -->
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div class="p-6 flex flex-col h-full">
+              <img src="/images/home/sell.jpg" alt="Sell Prompts" class="w-full h-40 object-cover rounded mb-4" />
+              <h3 class="text-xl font-bold text-white mt-2">Sell Your Prompts</h3>
+              <p class="text-slate-300 text-sm mt-2">Create, share and earn</p>
+            </div>
+          </div>
+          
+          <!-- Card 4: Hire an AI Creator -->
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div class="p-6 flex flex-col h-full">
+              <img src="/images/home/hire.jpg" alt="Hire Creator" class="w-full h-40 object-cover rounded mb-4" />
+              <h3 class="text-xl font-bold text-white mt-2">Hire an AI Creator</h3>
+              <p class="text-slate-300 text-sm mt-2">Discover world class AI expertise</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Featured Prompts -->
+        <div class="mt-24">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Featured Prompts</h2>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <!-- Prompt Cards -->
+            <div
+              v-for="product in products" 
+              :key="product.id"
+              class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              <div class="p-1">
+                <div class="relative">
+                  <img 
+                    :src="`/storage/${product.featured_image}`" 
+                    :alt="product.name" 
+                    class="w-full h-48 object-cover rounded-lg"
+                  />
+                  <span v-if="product.category" class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                    {{ product.category.name }}
+                  </span>
                 </div>
+                <div class="p-3">
+                  <h3 class="font-medium text-slate-900 dark:text-white text-sm line-clamp-2">{{ product.name }}</h3>
+                  <div class="flex justify-between items-center mt-2">
+                    <span class="font-bold text-slate-900 dark:text-white">{{ formatPrice(product.price) }}</span>
+                    <button class="text-xs px-2 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors">
+                      Detail
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Show All Button -->
+            <div 
+              v-if="products.length > 0"
+              class="bg-gradient-to-tr from-slate-900/30 to-slate-700/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
+            >
+              <div class="p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-slate-200/20 backdrop-blur-sm mx-auto flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+                <h3 class="font-medium text-white text-sm">See All Products</h3>
               </div>
             </div>
           </div>
@@ -106,8 +193,29 @@
 </template>
 
 <script setup>
-import { ArrowRightIcon, PhoneIcon } from '@heroicons/vue/24/outline'
+import { StarIcon, ShieldCheckIcon } from '@heroicons/vue/24/solid'
 import { onMounted } from 'vue'
+
+// Define props untuk menerima data produk
+defineProps({
+  products: {
+    type: Array,
+    default: () => []
+  },
+  categories: {
+    type: Array,
+    default: () => []
+  }
+})
+
+// Format harga dalam format rupiah
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(price);
+};
 
 onMounted(() => {
   if (typeof window !== 'undefined' && window.AOS) {

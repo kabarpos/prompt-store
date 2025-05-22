@@ -65,6 +65,14 @@ class User extends Authenticatable implements MustVerifyEmailContract
     }
 
     /**
+     * Get the digital accesses for this user
+     */
+    public function digitalAccesses(): HasMany
+    {
+        return $this->hasMany(DigitalAccess::class);
+    }
+
+    /**
      * Override metode sendEmailVerificationNotification untuk mencegah Laravel mengirim email otomatis
      */
     public function sendEmailVerificationNotification(): void

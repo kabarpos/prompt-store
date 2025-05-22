@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
     ShoppingBag, Package, Truck, CheckCircle, Clock, 
     ArrowLeft, FileText, User, Phone, Mail,
-    CreditCard, ExternalLink, ClipboardIcon, Info
+    CreditCard, ExternalLink, ClipboardIcon, Info, BookOpen, Eye
 } from 'lucide-vue-next';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -22,14 +22,13 @@ interface Product {
         id: number;
         name: string;
     };
+    is_digital: boolean;
 }
 
 interface OrderItem {
     id: number;
-    order_id: number;
-    product_id: number;
-    quantity: number;
     price: number;
+    quantity: number;
     subtotal: number;
     product: Product;
 }
@@ -56,25 +55,32 @@ interface Payment {
 interface Order {
     id: number;
     order_number: string;
-    user_id: number;
     customer_name: string;
     customer_phone: string;
     customer_email: string;
+    notes: string | null;
     subtotal: number;
-    admin_fee: number;
     discount: number;
+    admin_fee: number;
     total_amount: number;
     status: string;
-    notes: string;
     created_at: string;
-    updated_at: string;
+    payment?: {
+        id: number;
+        status: string;
+        payment_method?: {
+            id: number;
+            name: string;
+            type: string;
+        };
+    };
     items: OrderItem[];
-    payment?: Payment;
 }
 
 interface Props {
     order: Order;
     allPaymentMethods?: PaymentMethod[];
+    hasDigitalProducts?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -232,6 +238,16 @@ const copyToClipboard = (text: string | undefined): void => {
         console.error('Gagal menyalin teks: ', err);
     });
 };
+
+// Check if there are digital products in the order
+const hasDigitalProducts = computed(() => {
+    // Prioritaskan nilai dari props jika ada
+    if (typeof props.hasDigitalProducts !== 'undefined') {
+        return props.hasDigitalProducts;
+    }
+    // Jika tidak, hitung dari items
+    return props.order.items.some(item => item.product && item.product.is_digital);
+});
 </script>
 
 <template>
@@ -259,7 +275,7 @@ const copyToClipboard = (text: string | undefined): void => {
                     </Badge>
                     
                     <!-- Tombol Pembayaran -->
-                    <div v-if="order.payment?.status === 'pending'">
+                    <div v-if="order.payment?.status === 'pending' && order.payment?.payment_method?.type === 'bank_transfer'">
                         <Link :href="route('orders.payment.confirm', order.id)">
                             <Button variant="default" class="self-start md:self-auto">
                                 <CreditCard class="h-4 w-4 mr-1.5" />
@@ -396,6 +412,53 @@ const copyToClipboard = (text: string | undefined): void => {
                 </div>
             </div>
             
+            <!-- Digital Products Section -->
+            <div v-if="order.status === 'completed'" class="mt-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle class="flex items-center">
+                            <BookOpen class="h-5 w-5 mr-2 text-primary" />
+                            Produk Digital
+                        </CardTitle>
+                        <CardDescription>
+                            Akses produk digital Anda yang telah dibeli dalam pesanan ini
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div class="space-y-4">
+                            <div v-for="item in order.items" :key="item.id" v-if="item.product && item.product.is_digital" class="border border-border rounded-md p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border border-slate-200 dark:border-slate-700">
+                                            <img 
+                                                :src="`/storage/${item.product.featured_image}`" 
+                                                :alt="item.product.name" 
+                                                class="h-full w-full object-cover object-center"
+                                            />
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-slate-900 dark:text-white">{{ item.product.name }}</div>
+                                            <div class="text-xs text-slate-500 dark:text-slate-400">Produk Digital</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <Link :href="route('digital-products.index')">
+                                            <Button size="sm" variant="outline">
+                                                <Eye class="h-4 w-4 mr-1.5" />
+                                                Akses Produk
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div v-if="!hasDigitalProducts" class="text-center py-4">
+                                <p class="text-slate-500 dark:text-slate-400">Tidak ada produk digital dalam pesanan ini</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
 
         </div>
     </AppLayout>
