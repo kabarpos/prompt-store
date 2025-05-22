@@ -137,7 +137,7 @@ class Product extends Model
      */
     public function getUrlAttribute()
     {
-        return route('products.show', $this->slug);
+        return route('home');
     }
 
     /**

@@ -20,12 +20,12 @@
                 class="h-10 w-auto"
               />
               <h3 class="text-2xl font-bold text-white">
-                {{ websiteSettings?.siteName || websiteSettings?.site_name || 'Dilogif' }}
+                {{ websiteSettings?.siteName || websiteSettings?.site_name || 'MyPrompt' }}
               </h3>
             </div>
             <p class="text-white/70 max-w-md">
               {{ websiteSettings?.siteDescription || websiteSettings?.site_description || 
-              'Digital marketing dan solusi web profesional untuk membantu bisnis Anda berkembang. Kami menghadirkan solusi inovatif untuk membantu bisnis Anda mencapai tujuannya.' }}
+              'Platform yang menyediakan prompt untuk AI' }}
             </p>
           </div>
           
@@ -119,7 +119,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            Layanan Kami
+            Kategori Produk
           </h4>
           <ul class="space-y-3">
             <li v-for="service in services" :key="service" class="group">
@@ -176,19 +176,15 @@ const websiteSettings = computed(() => page.props.websiteSettings)
 
 const navigation = computed(() => [
   { name: 'Beranda', href: '/' },
-  { name: 'Tentang Kami', href: '/about' },
-  { name: 'Layanan', href: '/services' },
-  { name: 'Produk', href: '/products' },
-  { name: 'Blog', href: '/blog' },
   { name: 'Kontak', href: '/contact' }
 ])
 
 const services = [
-  'Web Development',
-  'Digital Marketing',
-  'UI/UX Design',
-  'SEO Optimization',
-  'Content Creation',
-  'Social Media Management'
+  'Prompt ChatGPT',
+  'Prompt DALL-E',
+  'Prompt Midjourney',
+  'Prompt Stable Diffusion',
+  'Prompt Claude',
+  'Template Prompt'
 ]
 </script> 

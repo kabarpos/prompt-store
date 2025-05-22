@@ -39,7 +39,6 @@ class CacheServiceProvider extends ServiceProvider
         $cacheKeys = [
             \App\Models\Product::class => ['active_products'],
             \App\Models\Order::class => ['recent_orders', 'order_stats'],
-            \App\Models\Service::class => ['services_list', 'featured_services'],
         ];
 
         foreach ($cacheKeys as $model => $keys) {

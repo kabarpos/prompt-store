@@ -82,7 +82,7 @@
               </div>
             </div>
             
-            <!-- Featured In -->
+            <!-- Featured In
             <div class="mt-8">
               <p class="text-xs uppercase text-slate-500 dark:text-slate-400 mb-4">Featured in</p>
               <div class="flex flex-wrap justify-center gap-6 opacity-70">
@@ -93,7 +93,7 @@
                 <img src="/images/press/techcrunch.svg" alt="TechCrunch" class="h-6 grayscale" />
                 <img src="/images/press/wsj.svg" alt="Wall Street Journal" class="h-6 grayscale" />
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         
@@ -103,7 +103,7 @@
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div class="absolute top-2 right-2 px-2 py-1 bg-slate-900/70 text-white text-xs rounded">New feature</div>
             <div class="p-6 flex flex-col h-full">
-              <img src="/images/home/communities.jpg" alt="Creator Communities" class="w-full h-40 object-cover rounded mb-4" />
+              <img src="https://placehold.co/600x400/1e293b/ffffff?text=Creator+Communities" alt="Creator Communities" class="w-full h-40 object-cover rounded mb-4" />
               <h3 class="text-xl font-bold text-white mt-2">Creator Communities</h3>
               <p class="text-slate-300 text-sm mt-2">Chat with thousands of other AI creators</p>
             </div>
@@ -112,7 +112,7 @@
           <!-- Card 2: Explore the Marketplace -->
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div class="p-6 flex flex-col h-full">
-              <img src="/images/home/marketplace.jpg" alt="Marketplace" class="w-full h-40 object-cover rounded mb-4" />
+              <img src="https://placehold.co/600x400/1e293b/ffffff?text=Marketplace" alt="Marketplace" class="w-full h-40 object-cover rounded mb-4" />
               <h3 class="text-xl font-bold text-white mt-2">Explore the Marketplace</h3>
               <p class="text-slate-300 text-sm mt-2">Browse 190k+ quality, tested prompts</p>
             </div>
@@ -121,7 +121,7 @@
           <!-- Card 3: Sell Your Prompts -->
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div class="p-6 flex flex-col h-full">
-              <img src="/images/home/sell.jpg" alt="Sell Prompts" class="w-full h-40 object-cover rounded mb-4" />
+              <img src="https://placehold.co/600x400/1e293b/ffffff?text=Sell+Prompts" alt="Sell Prompts" class="w-full h-40 object-cover rounded mb-4" />
               <h3 class="text-xl font-bold text-white mt-2">Sell Your Prompts</h3>
               <p class="text-slate-300 text-sm mt-2">Create, share and earn</p>
             </div>
@@ -130,7 +130,7 @@
           <!-- Card 4: Hire an AI Creator -->
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div class="p-6 flex flex-col h-full">
-              <img src="/images/home/hire.jpg" alt="Hire Creator" class="w-full h-40 object-cover rounded mb-4" />
+              <img src="https://placehold.co/600x400/1e293b/ffffff?text=Hire+Creator" alt="Hire Creator" class="w-full h-40 object-cover rounded mb-4" />
               <h3 class="text-xl font-bold text-white mt-2">Hire an AI Creator</h3>
               <p class="text-slate-300 text-sm mt-2">Discover world class AI expertise</p>
             </div>
@@ -146,7 +146,8 @@
             <div
               v-for="product in products" 
               :key="product.id"
-              class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200"
+              class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
+              @click="goToProductDetail(product)"
             >
               <div class="p-1">
                 <div class="relative">
@@ -163,26 +164,29 @@
                   <h3 class="font-medium text-slate-900 dark:text-white text-sm line-clamp-2">{{ product.name }}</h3>
                   <div class="flex justify-between items-center mt-2">
                     <span class="font-bold text-slate-900 dark:text-white">{{ formatPrice(product.price) }}</span>
-                    <button class="text-xs px-2 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors">
-                      Detail
+                    <button
+                      @click.stop="addToCart(product.id)"
+                      class="text-xs px-2 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors">
+                      Beli
                     </button>
                   </div>
                 </div>
               </div>
             </div>
             
-            <!-- Show All Button -->
+            <!-- Cart Button -->
             <div 
               v-if="products.length > 0"
-              class="bg-gradient-to-tr from-slate-900/30 to-slate-700/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
+              class="bg-gradient-to-tr from-slate-900/30 to-slate-700/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center cursor-pointer"
+              @click="goToCart"
             >
               <div class="p-6 text-center">
                 <div class="w-12 h-12 rounded-full bg-slate-200/20 backdrop-blur-sm mx-auto flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 class="font-medium text-white text-sm">See All Products</h3>
+                <h3 class="font-medium text-white text-sm">Lihat Keranjang</h3>
               </div>
             </div>
           </div>
@@ -195,6 +199,8 @@
 <script setup>
 import { StarIcon, ShieldCheckIcon } from '@heroicons/vue/24/solid'
 import { onMounted } from 'vue'
+import axios from 'axios'
+import { router } from '@inertiajs/vue3'
 
 // Define props untuk menerima data produk
 defineProps({
@@ -215,6 +221,46 @@ const formatPrice = (price) => {
     currency: 'IDR',
     minimumFractionDigits: 0
   }).format(price);
+};
+
+// Fungsi untuk menambahkan produk ke keranjang
+const addToCart = (productId) => {
+  // Kirim request ke endpoint cart.add
+  axios.post('/cart/add', {
+    product_id: productId,
+    quantity: 1
+  })
+  .then(response => {
+    // Tampilkan notifikasi sukses jika ada
+    if (window.toast) {
+      window.toast.success('Produk ditambahkan ke keranjang');
+    } else {
+      alert('Produk ditambahkan ke keranjang');
+    }
+    
+    // Refresh jumlah item di keranjang jika ada
+    if (window.eventBus && window.eventBus.emit) {
+      window.eventBus.emit('cartCount', response.data.count);
+    }
+  })
+  .catch(error => {
+    console.error('Error adding to cart:', error);
+    if (window.toast) {
+      window.toast.error('Gagal menambahkan produk ke keranjang');
+    } else {
+      alert('Gagal menambahkan produk ke keranjang');
+    }
+  });
+};
+
+// Fungsi untuk navigasi ke halaman detail produk
+const goToProductDetail = (product) => {
+  router.visit(`/products/${product.slug}`);
+};
+
+// Fungsi untuk navigasi ke halaman keranjang
+const goToCart = () => {
+  router.visit('/cart');
 };
 
 onMounted(() => {

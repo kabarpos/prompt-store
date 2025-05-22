@@ -14,10 +14,10 @@
         >
           <div class="relative w-10 h-10 flex items-center justify-center">
             <div class="absolute inset-0 bg-primary-600 rounded-xl rotate-6 transition-transform group-hover:rotate-12"></div>
-            <span class="relative text-2xl font-bold text-white">D</span>
+            <span class="relative text-2xl font-bold text-white">M</span>
           </div>
           <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-400 dark:to-primary-300">
-            Dilogif
+            MyPrompt
           </span>
         </Link>
 

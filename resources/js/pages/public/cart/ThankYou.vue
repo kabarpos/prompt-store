@@ -37,7 +37,7 @@
                 Lacak Pesanan
               </Button>
             </Link>
-            <Link :href="route('products.index')" class="inline-flex items-center justify-center">
+            <Link :href="route('home')" class="inline-flex items-center justify-center">
               <Button variant="outline" colorScheme="outline" class="px-6">
                 <ShoppingBagIcon class="h-4 w-4 mr-2" />
                 Lanjut Belanja

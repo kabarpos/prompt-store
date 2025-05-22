@@ -189,7 +189,7 @@ const getStatusBadgeColor = (status: string): string => {
                                         <ChevronRight class="h-4 w-4 ml-2 opacity-70 group-hover:translate-x-0.5 transition-transform" />
                                     </Button>
                                 </Link>
-                                <Link :href="route('products.index')" class="block w-full">
+                                <Link :href="route('home')" class="block w-full">
                                     <Button variant="outline" class="w-full group">
                                         <ShoppingBag class="h-4 w-4 mr-2" />
                                         Belanja Produk Baru
@@ -313,7 +313,7 @@ const getStatusBadgeColor = (status: string): string => {
                         <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">Belum Ada Pesanan</h3>
                         <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">Anda belum memiliki pesanan. Mulailah berbelanja dan temukan produk yang Anda butuhkan.</p>
                         <Button variant="default" as-child>
-                            <Link :href="route('products.index')" class="inline-flex items-center">
+                            <Link :href="route('home')" class="inline-flex items-center">
                                 <ShoppingBag class="h-4 w-4 mr-2" />
                                 Mulai Belanja
                             </Link>

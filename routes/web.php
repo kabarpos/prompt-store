@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -54,9 +53,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         // Pages
         Route::resource('pages', PageController::class);
-        
-        // Services
-        Route::resource('services', ServiceController::class);
         
         // Team Members
         Route::resource('team', TeamMemberController::class);
@@ -130,7 +126,8 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
 
-// Products Routes - removed and integrated into HomePage
+// Product Routes
+Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 // Cart Routes (Public)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

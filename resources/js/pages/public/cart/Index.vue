@@ -114,7 +114,7 @@
               
               <!-- Cart Actions -->
               <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <Link :href="route('products.index')" class="inline-flex items-center">
+                <Link :href="route('home')" class="inline-flex items-center">
                   <Button variant="default" colorScheme="primary">Lanjut Belanja</Button>
                 </Link>
                 <div>
@@ -178,7 +178,7 @@
           <div class="text-6xl mb-4">🛒</div>
           <h3 class="text-2xl font-semibold mb-2">Keranjang Belanja Kosong</h3>
           <p class="text-gray-500 mb-6 max-w-md mx-auto">Sepertinya Anda belum menambahkan produk apa pun ke keranjang belanja Anda</p>
-          <Link :href="route('products.index')">
+          <Link :href="route('home')">
             <Button colorScheme="primary">Mulai Belanja</Button>
           </Link>
         </div>

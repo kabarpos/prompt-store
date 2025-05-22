@@ -145,7 +145,7 @@
           <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">Anda belum melakukan pemesanan atau tidak ada pesanan yang sesuai dengan filter yang dipilih.</p>
           <Button v-if="search || selectedStatus" @click="resetFilters">Reset Filter</Button>
           <div v-else>
-            <Link :href="route('products.index')">
+            <Link :href="route('home')">
               <Button>Mulai Belanja</Button>
             </Link>
           </div>
