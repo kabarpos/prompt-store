@@ -17,19 +17,19 @@
         </div>
         
         <!-- Success Message -->
-        <div class="bg-background/60 backdrop-blur-sm rounded-xl shadow-sm p-8 text-center mb-8 border border-border" data-aos="fade-up" data-aos-delay="100">
+        <div class="bg-white dark:bg-slate-900 backdrop-blur-sm rounded-xl shadow-sm p-8 text-center mb-8 border border-slate-200 dark:border-slate-700" data-aos="fade-up" data-aos-delay="100">
           <div class="mb-4">
-            <div class="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-green-100">
-              <CheckCircleIcon class="h-16 w-16 text-green-600" />
+            <div class="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+              <CheckCircleIcon class="h-16 w-16 text-green-600 dark:text-green-400" />
             </div>
           </div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Pesanan Berhasil!</h1>
-          <p class="text-lg text-gray-600 mb-6">Terima kasih telah melakukan pemesanan di toko kami.</p>
-          <div class="inline-block bg-gray-100 rounded-lg px-6 py-3 mb-6">
-            <p class="text-gray-700 font-medium">Nomor Pesanan:</p>
-            <p class="text-2xl font-bold text-primary-600">{{ order.order_number }}</p>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Pesanan Berhasil!</h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">Terima kasih telah melakukan pemesanan di toko kami.</p>
+          <div class="inline-block bg-gray-100 dark:bg-slate-800 rounded-lg px-6 py-3 mb-6">
+            <p class="text-gray-700 dark:text-gray-300 font-medium">Nomor Pesanan:</p>
+            <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">{{ order.order_number }}</p>
           </div>
-          <p class="text-gray-600 mb-8">Silakan simpan nomor pesanan ini sebagai referensi. Anda juga dapat melacak status pesanan Anda menggunakan tombol di bawah.</p>
+          <p class="text-gray-600 dark:text-gray-400 mb-8">Silakan simpan nomor pesanan ini sebagai referensi. Anda juga dapat melacak status pesanan Anda menggunakan tombol di bawah.</p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
             <Link :href="route('orders.track', { order: order.order_number })" class="inline-flex items-center justify-center">
               <Button colorScheme="primary" class="px-6">
@@ -47,68 +47,68 @@
         </div>
         
         <!-- Order Details -->
-        <div class="bg-background/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-border" data-aos="fade-up" data-aos-delay="200">
-          <div class="p-6 border-b border-gray-200">
-            <h2 class="text-xl font-semibold mb-0">Detail Pesanan</h2>
+        <div class="bg-white dark:bg-slate-900 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-700" data-aos="fade-up" data-aos-delay="200">
+          <div class="p-6 border-b border-gray-200 dark:border-slate-700">
+            <h2 class="text-xl font-semibold mb-0 text-gray-900 dark:text-white">Detail Pesanan</h2>
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
             <!-- Customer Info -->
             <div>
-              <h3 class="text-lg font-medium mb-3">Informasi Pemesan</h3>
-              <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Informasi Pemesan</h3>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
                 <div class="mb-3">
-                  <p class="text-sm text-gray-500">Nama</p>
-                  <p class="font-medium">{{ order.customer_name }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Nama</p>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ order.customer_name }}</p>
                 </div>
                 <div class="mb-3">
-                  <p class="text-sm text-gray-500">Nomor WhatsApp</p>
-                  <p class="font-medium">{{ order.customer_phone }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Nomor WhatsApp</p>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ order.customer_phone }}</p>
                 </div>
                 <div v-if="order.customer_email">
-                  <p class="text-sm text-gray-500">Email</p>
-                  <p class="font-medium">{{ order.customer_email }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ order.customer_email }}</p>
                 </div>
               </div>
             </div>
             
             <!-- Order Summary -->
             <div>
-              <h3 class="text-lg font-medium mb-3">Ringkasan Pembayaran</h3>
-              <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Ringkasan Pembayaran</h3>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
                 <div class="space-y-2 mb-3">
                   <div class="flex justify-between">
-                    <p class="text-sm text-gray-500">Subtotal</p>
-                    <p class="font-medium">{{ formatPrice(order.subtotal) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Subtotal</p>
+                    <p class="font-medium text-gray-900 dark:text-white">{{ formatPrice(order.subtotal) }}</p>
                   </div>
                   <div class="flex justify-between">
-                    <p class="text-sm text-gray-500">Biaya Admin</p>
-                    <p class="font-medium">{{ formatPrice(order.admin_fee) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Biaya Admin</p>
+                    <p class="font-medium text-gray-900 dark:text-white">{{ formatPrice(order.admin_fee) }}</p>
                   </div>
                   <div class="flex justify-between">
-                    <p class="text-sm text-gray-500">Diskon</p>
-                    <p class="font-medium text-green-600">-{{ formatPrice(order.discount) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Diskon</p>
+                    <p class="font-medium text-green-600 dark:text-green-400">-{{ formatPrice(order.discount) }}</p>
                   </div>
                 </div>
-                <div class="pt-3 border-t border-gray-200 flex justify-between">
-                  <p class="font-medium">Total</p>
-                  <p class="font-bold text-primary-600">{{ formatPrice(order.total_amount) }}</p>
+                <div class="pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between">
+                  <p class="font-medium text-gray-900 dark:text-white">Total</p>
+                  <p class="font-bold text-primary-600 dark:text-primary-400">{{ formatPrice(order.total_amount) }}</p>
                 </div>
               </div>
             </div>
           </div>
           
           <!-- Order Items -->
-          <div class="p-6 border-t border-gray-200">
-            <h3 class="text-lg font-medium mb-4">Produk yang Dipesan</h3>
-            <div class="border border-gray-200 rounded-lg overflow-hidden">
+          <div class="p-6 border-t border-gray-200 dark:border-slate-700">
+            <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">Produk yang Dipesan</h3>
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden">
               <div 
                 v-for="(item, index) in order.items" 
                 :key="item.id" 
-                :class="{'border-t border-gray-200': index > 0}"
-                class="p-4 flex items-center"
+                :class="{'border-t border-gray-200 dark:border-slate-700': index > 0}"
+                class="p-4 flex items-center bg-white dark:bg-slate-800"
               >
-                <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 dark:border-slate-700">
                   <img 
                     :src="`/storage/${item.product.featured_image}`" 
                     :alt="item.product.name" 
@@ -116,10 +116,10 @@
                   />
                 </div>
                 <div class="ml-4 flex-1">
-                  <h4 class="text-sm font-medium">{{ item.product.name }}</h4>
+                  <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ item.product.name }}</h4>
                   <div class="mt-1 flex justify-between">
-                    <p class="text-sm text-gray-500">{{ formatPrice(item.price) }} x {{ item.quantity }}</p>
-                    <p class="text-sm font-medium">{{ formatPrice(item.subtotal) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatPrice(item.price) }} x {{ item.quantity }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ formatPrice(item.subtotal) }}</p>
                   </div>
                 </div>
               </div>
@@ -127,63 +127,63 @@
           </div>
           
           <!-- Notes and Status -->
-          <div class="p-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 border-t border-gray-200 dark:border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Notes -->
             <div>
-              <h3 class="text-lg font-medium mb-3">Catatan Pesanan</h3>
-              <div class="bg-gray-50 rounded-lg p-4">
-                <p v-if="order.notes" class="text-gray-700">{{ order.notes }}</p>
-                <p v-else class="text-gray-500 italic">Tidak ada catatan</p>
+              <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Catatan Pesanan</h3>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
+                <p v-if="order.notes" class="text-gray-700 dark:text-gray-300">{{ order.notes }}</p>
+                <p v-else class="text-gray-500 dark:text-gray-400 italic">Tidak ada catatan</p>
               </div>
             </div>
             
             <!-- Status -->
             <div>
-              <h3 class="text-lg font-medium mb-3">Status Pesanan</h3>
-              <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Status Pesanan</h3>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
                 <div class="inline-flex items-center">
                   <span 
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
                     :class="{
-                      'bg-yellow-100 text-yellow-800': order.status === 'pending',
-                      'bg-blue-100 text-blue-800': order.status === 'processing',
-                      'bg-purple-100 text-purple-800': order.status === 'review',
-                      'bg-green-100 text-green-800': order.status === 'completed',
-                      'bg-red-100 text-red-800': order.status === 'cancelled'
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': order.status === 'pending',
+                      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400': order.status === 'processing',
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400': order.status === 'review',
+                      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': order.status === 'completed',
+                      'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': order.status === 'cancelled'
                     }"
                   >
                     <Badge 
                       variant="outline" 
                       :class="{
-                        'border-yellow-400 text-yellow-600': order.status === 'pending',
-                        'border-blue-400 text-blue-600': order.status === 'processing',
-                        'border-purple-400 text-purple-600': order.status === 'review',
-                        'border-green-400 text-green-600': order.status === 'completed',
-                        'border-red-400 text-red-600': order.status === 'cancelled'
+                        'border-yellow-400 text-yellow-600 dark:text-yellow-400': order.status === 'pending',
+                        'border-blue-400 text-blue-600 dark:text-blue-400': order.status === 'processing',
+                        'border-purple-400 text-purple-600 dark:text-purple-400': order.status === 'review',
+                        'border-green-400 text-green-600 dark:text-green-400': order.status === 'completed',
+                        'border-red-400 text-red-600 dark:text-red-400': order.status === 'cancelled'
                       }"
                     >
                       {{ getStatusLabel(order.status) }}
                     </Badge>
                   </span>
                 </div>
-                <p class="mt-2 text-sm text-gray-500">Pesanan Anda akan segera diproses oleh tim kami.</p>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Pesanan Anda akan segera diproses oleh tim kami.</p>
               </div>
             </div>
           </div>
           
           <!-- Payment Information -->
-          <div class="p-6 border-t border-gray-200">
-            <h3 class="text-lg font-medium mb-3">Informasi Pembayaran</h3>
+          <div class="p-6 border-t border-gray-200 dark:border-slate-700">
+            <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Informasi Pembayaran</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Bank Transfer Info -->
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h4 class="font-medium text-base mb-3">Metode Pembayaran</h4>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
+                <h4 class="font-medium text-base mb-3 text-gray-900 dark:text-white">Metode Pembayaran</h4>
                 
                 <!-- Daftar Rekening Pembayaran Aktif -->
                 <div v-if="paymentMethods && paymentMethods.length > 0">
                   <div v-for="method in paymentMethods.filter(m => m.type === 'bank_transfer')" :key="method.id" 
-                      class="border border-gray-200 rounded-lg p-3 bg-white mb-3">
+                      class="border border-gray-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 mb-3">
                     <div class="flex items-center mb-2">
                       <img 
                         v-if="method.logo" 
@@ -191,41 +191,41 @@
                         class="h-6 mr-2 object-contain" 
                         :alt="method.name" 
                       />
-                      <p class="font-medium">{{ method.name }}</p>
+                      <p class="font-medium text-gray-900 dark:text-white">{{ method.name }}</p>
                     </div>
                     <div class="space-y-2 text-sm">
-                      <p><span class="font-medium">Bank:</span> {{ method.bank_name }}</p>
+                      <p class="text-gray-700 dark:text-gray-300"><span class="font-medium">Bank:</span> {{ method.bank_name }}</p>
                       
-                      <div class="flex items-center justify-between bg-gray-50 rounded p-2">
-                        <p><span class="font-medium">No. Rekening:</span> {{ method.account_number }}</p>
+                      <div class="flex items-center justify-between bg-gray-50 dark:bg-slate-800 rounded p-2">
+                        <p class="text-gray-700 dark:text-gray-300"><span class="font-medium">No. Rekening:</span> {{ method.account_number }}</p>
                         <button
                           @click="copyToClipboard(method.account_number)"
-                          class="text-primary-600 hover:text-primary-700 p-1 rounded-md hover:bg-primary-50 text-xs"
+                          class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-md hover:bg-primary-50 dark:hover:bg-primary-900/20 text-xs"
                           title="Salin nomor rekening"
                         >
                           <ClipboardCopyIcon class="h-4 w-4" />
                         </button>
                       </div>
                       
-                      <p><span class="font-medium">Atas Nama:</span> {{ method.account_name }}</p>
+                      <p class="text-gray-700 dark:text-gray-300"><span class="font-medium">Atas Nama:</span> {{ method.account_name }}</p>
                     </div>
                   </div>
                 </div>
                 
-                <div v-else class="text-gray-500 italic">
+                <div v-else class="text-gray-500 dark:text-gray-400 italic">
                   Silakan hubungi admin kami untuk informasi pembayaran.
                 </div>
                 
                 <!-- Payment Status -->
-                <div v-if="order.payment" class="bg-white border border-gray-200 rounded-lg p-3 mt-3">
-                  <p class="text-sm font-medium text-gray-600 mb-2">Status Pembayaran</p>
+                <div v-if="order.payment" class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg p-3 mt-3">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Status Pembayaran</p>
                   <Badge 
                     variant="outline" 
                     class="text-sm px-3 py-1"
                     :class="{
-                      'border-yellow-400 text-yellow-600 bg-yellow-50': order.payment.status === 'pending',
-                      'border-green-400 text-green-600 bg-green-50': order.payment.status === 'completed',
-                      'border-red-400 text-red-600 bg-red-50': order.payment.status === 'failed'
+                      'border-yellow-400 text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-400': order.payment.status === 'pending',
+                      'border-green-400 text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400': order.payment.status === 'completed',
+                      'border-red-400 text-red-600 bg-red-50 dark:bg-red-900/30 dark:text-red-400': order.payment.status === 'failed'
                     }"
                   >
                     {{ getPaymentStatusLabel(order.payment.status) }}
@@ -234,25 +234,25 @@
               </div>
               
               <!-- Payment Instructions -->
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h4 class="font-medium text-base mb-3">Petunjuk Pembayaran</h4>
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-4">
+                <h4 class="font-medium text-base mb-3 text-gray-900 dark:text-white">Petunjuk Pembayaran</h4>
                 
                 <!-- Jumlah yang harus dibayar dengan tombol salin -->
-                <div class="bg-white border border-primary-100 rounded-lg p-3 mb-4 flex items-center justify-between">
+                <div class="bg-white dark:bg-slate-900 border border-primary-100 dark:border-primary-900/50 rounded-lg p-3 mb-4 flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-gray-600 mb-1">Total Pembayaran:</p>
-                    <p class="text-xl font-bold text-primary-600">{{ formatPrice(order.total_amount) }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Pembayaran:</p>
+                    <p class="text-xl font-bold text-primary-600 dark:text-primary-400">{{ formatPrice(order.total_amount) }}</p>
                   </div>
                   <button
                     @click="copyToClipboard(order.total_amount.toString())"
-                    class="bg-primary-50 text-primary-600 hover:bg-primary-100 p-2 rounded-md"
+                    class="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-800/30 p-2 rounded-md"
                     title="Salin jumlah pembayaran"
                   >
                     <ClipboardCopyIcon class="h-5 w-5" />
                   </button>
                 </div>
                 
-                <ol class="list-decimal list-inside space-y-2 text-sm ml-2">
+                <ol class="list-decimal list-inside space-y-2 text-sm ml-2 text-gray-700 dark:text-gray-300">
                   <li>Lakukan pembayaran sesuai dengan total pesanan ({{ formatPrice(order.total_amount) }}).</li>
                   <li>Sertakan nomor pesanan ({{ order.order_number }}) pada keterangan transfer.</li>
                   <li>Setelah melakukan pembayaran, simpan bukti pembayaran Anda.</li>

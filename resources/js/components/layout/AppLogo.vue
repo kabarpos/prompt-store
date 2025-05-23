@@ -75,21 +75,21 @@ const toggleDebug = () => {
 
         <!-- Wadah yang menyelaraskan logo dan teks dalam satu baris -->
         <div class="flex items-center gap-3">
-            <div v-if="logoUrl" class="flex items-center justify-center rounded-md overflow-hidden w-8 h-8 logo-container">
+            <div v-if="logoUrl" class="flex items-center justify-center rounded-md overflow-hidden w-10 h-10 logo-container">
                 <img :src="logoUrl" alt="Logo" class="max-h-full max-w-full object-contain" />
             </div>
-            <div v-else class="flex items-center justify-center rounded-md overflow-hidden w-8 h-8 logo-container">
+            <div v-else class="flex items-center justify-center rounded-md overflow-hidden w-10 h-10 logo-container">
                 <AppLogoIcon class="w-full h-full" />
             </div>
             
-            <div class="text-sm font-bold leading-tight site-name">
+            <div class="text-lg font-bold leading-tight site-name">
                 {{ siteName }}
             </div>
         </div>
     </div>
 </template>
 
-<style scoped>
+<style>
 .logo-container {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
@@ -99,15 +99,13 @@ const toggleDebug = () => {
     transform: scale(1.05);
 }
 
+/* Implementasi standar untuk mode default (light) */
 .site-name {
-    color: #fff;
-}
-
-:deep(.dark) .site-name {
-    color: rgba(255, 255, 255, 0.95);
-}
-
-:deep(.light) .site-name {
     color: #1a1a1a;
+}
+
+/* Dark mode menggunakan kelas global dengan warna teks yang lebih terang */
+html.dark .site-name {
+    color: #ffffff !important;
 }
 </style>

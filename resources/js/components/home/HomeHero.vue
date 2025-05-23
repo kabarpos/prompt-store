@@ -100,39 +100,39 @@
         <!-- Feature Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
           <!-- Card 1: Creator Communities -->
-          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div class="absolute top-2 right-2 px-2 py-1 bg-slate-900/70 text-white text-xs rounded">New feature</div>
+          <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-slate-100 dark:border-slate-700">
+            <div class="absolute top-2 right-2 px-2 py-1 bg-primary-600/80 text-white text-xs rounded">New feature</div>
             <div class="p-6 flex flex-col h-full">
               <img src="https://placehold.co/600x400/1e293b/ffffff?text=Creator+Communities" alt="Creator Communities" class="w-full h-40 object-cover rounded mb-4" />
-              <h3 class="text-xl font-bold text-white mt-2">Creator Communities</h3>
-              <p class="text-slate-300 text-sm mt-2">Chat with thousands of other AI creators</p>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-2">Creator Communities</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">Chat with thousands of other AI creators</p>
             </div>
           </div>
           
           <!-- Card 2: Explore the Marketplace -->
-          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-slate-100 dark:border-slate-700">
             <div class="p-6 flex flex-col h-full">
               <img src="https://placehold.co/600x400/1e293b/ffffff?text=Marketplace" alt="Marketplace" class="w-full h-40 object-cover rounded mb-4" />
-              <h3 class="text-xl font-bold text-white mt-2">Explore the Marketplace</h3>
-              <p class="text-slate-300 text-sm mt-2">Browse 190k+ quality, tested prompts</p>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-2">Explore the Marketplace</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">Browse 190k+ quality, tested prompts</p>
             </div>
           </div>
           
           <!-- Card 3: Sell Your Prompts -->
-          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-slate-100 dark:border-slate-700">
             <div class="p-6 flex flex-col h-full">
               <img src="https://placehold.co/600x400/1e293b/ffffff?text=Sell+Prompts" alt="Sell Prompts" class="w-full h-40 object-cover rounded mb-4" />
-              <h3 class="text-xl font-bold text-white mt-2">Sell Your Prompts</h3>
-              <p class="text-slate-300 text-sm mt-2">Create, share and earn</p>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-2">Sell Your Prompts</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">Create, share and earn</p>
             </div>
           </div>
           
           <!-- Card 4: Hire an AI Creator -->
-          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-slate-100 dark:border-slate-700">
             <div class="p-6 flex flex-col h-full">
               <img src="https://placehold.co/600x400/1e293b/ffffff?text=Hire+Creator" alt="Hire Creator" class="w-full h-40 object-cover rounded mb-4" />
-              <h3 class="text-xl font-bold text-white mt-2">Hire an AI Creator</h3>
-              <p class="text-slate-300 text-sm mt-2">Discover world class AI expertise</p>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-2">Hire an AI Creator</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">Discover world class AI expertise</p>
             </div>
           </div>
         </div>
