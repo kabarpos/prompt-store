@@ -127,6 +127,39 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        // Channels khusus untuk aplikasi
+        'api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/api.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'replace_placeholders' => true,
+        ],
+        
+        'user-activity' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/user-activity.log'),
+            'level' => 'info',
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+        
+        'performance' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/performance.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'replace_placeholders' => true,
+        ],
+        
+        'page-access' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/page-access.log'),
+            'level' => 'info',
+            'days' => 7,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\Traits\HasLazyImage;
+use App\Traits\OptimizedQueries;
 use Illuminate\Support\Facades\Cache;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, HasLazyImage;
+    use HasFactory, SoftDeletes, HasLazyImage, OptimizedQueries;
 
     protected $fillable = [
         'name',

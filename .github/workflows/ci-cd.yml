@@ -1,0 +1,138 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, dom, fileinfo, mysql, redis
+          coverage: xdebug
+
+      - name: Copy .env.example
+        run: cp .env.example .env.testing
+
+      - name: Configure environment
+        run: |
+          sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=mysql/' .env.testing
+          sed -i 's/DB_HOST=127.0.0.1/DB_HOST=127.0.0.1/' .env.testing
+          sed -i 's/DB_PORT=3306/DB_PORT=3306/' .env.testing
+          sed -i 's/DB_DATABASE=prompt_store/DB_DATABASE=testing/' .env.testing
+          sed -i 's/DB_USERNAME=root/DB_USERNAME=root/' .env.testing
+          sed -i 's/DB_PASSWORD=/DB_PASSWORD=password/' .env.testing
+          sed -i 's/CACHE_DRIVER=redis/CACHE_DRIVER=redis/' .env.testing
+          sed -i 's/SESSION_DRIVER=redis/SESSION_DRIVER=redis/' .env.testing
+          sed -i 's/QUEUE_CONNECTION=redis/QUEUE_CONNECTION=redis/' .env.testing
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Generate key
+        run: php artisan key:generate --env=testing
+
+      - name: Run migrations
+        run: php artisan migrate --env=testing
+
+      - name: Run PHP tests
+        run: vendor/bin/pest --coverage
+
+      - name: Run ESLint
+        run: npm run lint
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: tests
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.STAGING_SSH_KEY }}
+          
+      - name: Deploy to staging server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }} << 'EOF'
+            cd /path/to/staging/prompt-store
+            git pull origin develop
+            composer install --no-dev --optimize-autoloader
+            npm ci
+            npm run build
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            sudo supervisorctl restart prompt-store-worker:*
+          EOF
+
+  deploy-production:
+    name: Deploy to Production
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          
+      - name: Deploy to production server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.PRODUCTION_SSH_USER }}@${{ secrets.PRODUCTION_SSH_HOST }} << 'EOF'
+            cd /path/to/production/prompt-store
+            php artisan down --message="Sedang dilakukan pembaruan sistem" --retry=60
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            npm ci
+            npm run build
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            sudo supervisorctl restart prompt-store-worker:*
+            php artisan up
+          EOF 

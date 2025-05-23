@@ -6,10 +6,11 @@ use App\Events\OrderCompletedEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\OptimizedQueries;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, OptimizedQueries;
 
     /**
      * Status constants
