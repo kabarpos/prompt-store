@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         // Buat user admin
         User::create([
             'name' => 'Administrator',
-            'email' => 'admin@dilogif.com',
+            'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ])->assignRole('admin');
@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         // Buat user staff
         User::create([
             'name' => 'Staff',
-            'email' => 'staff@dilogif.com',
+            'email' => 'staff@example.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ])->assignRole('staff');

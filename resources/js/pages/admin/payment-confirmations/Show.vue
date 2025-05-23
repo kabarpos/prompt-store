@@ -2,7 +2,7 @@
   <Head title="Detail Konfirmasi Pembayaran" />
   
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="container mx-auto py-6 px-4 md:px-6">
+    <div class="container mx-auto  py-6 px-4 md:px-6">
       <!-- Header dengan judul dan tombol aksi -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 class="text-2xl font-bold tracking-tight">Detail Konfirmasi Pembayaran</h1>

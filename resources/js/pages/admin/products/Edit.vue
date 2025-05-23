@@ -283,7 +283,9 @@
                                     </p>
                                     <InputError :message="form.errors.demo_url" class="mt-2" />
                                 </div>
+                            </div>
 
+                            <div>
                                 <div class="mt-4">
                                     <Label for="featured_image">Gambar Utama</Label>
                                     <div class="mt-2">
@@ -350,29 +352,7 @@
                                     <InputError :message="form.errors.gallery" class="mt-2" />
                                 </div>
 
-                                <div class="flex items-center gap-3 mt-6">
-                                    <div class="flex-1">
-                                        <Label for="is_active" class="mb-3">Status Produk</Label>
-                                        <div class="flex items-center gap-2">
-                                            <Switch 
-                                                id="is_active" 
-                                                v-model="form.is_active"
-                                                class="peer data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-200 dark:data-[state=unchecked]:bg-gray-700"
-                                            />
-                                            <Label for="is_active">{{ form.is_active ? 'Aktif' : 'Tidak Aktif' }}</Label>
-                                        </div>
-                                        <Badge 
-                                            variant="outline" 
-                                            :class="form.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-800/20 dark:border-green-300/20 mt-2' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-800/20 dark:border-gray-300/20 mt-2'"
-                                        >
-                                            {{ form.is_active ? 'Produk akan ditampilkan di website' : 'Produk tidak akan ditampilkan di website' }}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="mb-6">
+                                <div class="mb-6 mt-6">
                                     <Label>Fitur Produk</Label>
                                     <div class="space-y-2 mt-2">
                                         <div v-for="(feature, index) in productFeatures" :key="`feature-${index}`" class="flex items-start gap-2">
@@ -444,14 +424,36 @@
                                     </p>
                                 </div>
 
-                                <Label for="description">Deskripsi</Label>
-                                <Textarea
-                                    id="description"
-                                    v-model="form.description"
-                                    class="mt-1 block w-full h-[400px]"
-                                    required
-                                />
-                                <InputError :message="form.errors.description" class="mt-2" />
+                                <div>
+                                    <Label for="description">Deskripsi</Label>
+                                    <Textarea
+                                        id="description"
+                                        v-model="form.description"
+                                        class="mt-1 block w-full h-[400px]"
+                                        required
+                                    />
+                                    <InputError :message="form.errors.description" class="mt-2" />
+                                </div>
+
+                                <div class="flex items-center gap-3 mt-6">
+                                    <div class="flex-1">
+                                        <Label for="is_active" class="mb-3">Status Produk</Label>
+                                        <div class="flex items-center gap-2">
+                                            <Switch 
+                                                id="is_active" 
+                                                v-model="form.is_active"
+                                                class="peer data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-200 dark:data-[state=unchecked]:bg-gray-700"
+                                            />
+                                            <Label for="is_active">{{ form.is_active ? 'Aktif' : 'Tidak Aktif' }}</Label>
+                                        </div>
+                                        <Badge 
+                                            variant="outline" 
+                                            :class="form.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-800/20 dark:border-green-300/20 mt-2' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-800/20 dark:border-gray-300/20 mt-2'"
+                                        >
+                                            {{ form.is_active ? 'Produk akan ditampilkan di website' : 'Produk tidak akan ditampilkan di website' }}
+                                        </Badge>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
