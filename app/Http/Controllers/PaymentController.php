@@ -53,7 +53,17 @@ class PaymentController extends Controller
         $payment->status = 'pending';
         $payment->save();
         
-        return redirect()->back()->with('success', 'Metode pembayaran berhasil diperbarui');
+        // Dapatkan metode pembayaran yang dipilih
+        $paymentMethod = PaymentMethod::find($request->payment_method_id);
+        
+        // Arahkan berdasarkan jenis metode pembayaran
+        if ($paymentMethod && $paymentMethod->type === 'bank_transfer') {
+            // Jika bank transfer, arahkan ke halaman konfirmasi pembayaran
+            return redirect()->route('orders.payment.confirm', $order)->with('success', 'Metode pembayaran berhasil diperbarui');
+        } else {
+            // Jika bukan bank transfer, arahkan ke halaman detail order
+            return redirect()->route('orders.show', $order)->with('success', 'Metode pembayaran berhasil diperbarui');
+        }
     }
     
     /**

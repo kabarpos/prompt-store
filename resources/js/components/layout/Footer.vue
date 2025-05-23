@@ -122,13 +122,16 @@
             Kategori Produk
           </h4>
           <ul class="space-y-3">
-            <li v-for="service in services" :key="service" class="group">
-              <a href="#" class="text-white/70 hover:text-white transition-colors flex items-center gap-2 group-hover:gap-3">
+            <li v-for="category in categories" :key="category.id" class="group">
+              <a :href="`/?category=${category.slug}`" class="text-white/70 hover:text-white transition-colors flex items-center gap-2 group-hover:gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                 </svg>
-                {{ service }}
+                {{ category.name }}
               </a>
+            </li>
+            <li v-if="!categories || categories.length === 0" class="text-white/50 text-sm italic">
+              Belum ada kategori
             </li>
           </ul>
         </div>
@@ -179,12 +182,5 @@ const navigation = computed(() => [
   { name: 'Kontak', href: '/contact' }
 ])
 
-const services = [
-  'Prompt ChatGPT',
-  'Prompt DALL-E',
-  'Prompt Midjourney',
-  'Prompt Stable Diffusion',
-  'Prompt Claude',
-  'Template Prompt'
-]
+const categories = computed(() => page.props.categories)
 </script> 

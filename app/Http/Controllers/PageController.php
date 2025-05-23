@@ -129,6 +129,12 @@ class PageController extends Controller
      */
     public function contact()
     {
-        return Inertia::render('public/contact/Index');
+        $categories = \App\Models\Category::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+            
+        return Inertia::render('public/contact/Index', [
+            'categories' => $categories
+        ]);
     }
 }

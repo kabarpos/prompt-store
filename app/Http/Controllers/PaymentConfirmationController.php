@@ -204,15 +204,10 @@ class PaymentConfirmationController extends Controller
      */
     public function userIndex()
     {
-        // Get user's orders that need payment or have pending confirmations
+        // Get user's orders that need payment, termasuk yang belum memiliki payment
         $pendingOrders = Order::with(['payment.paymentMethod'])
             ->where('user_id', auth()->id())
-            ->whereHas('payment', function($query) {
-                $query->where('status', 'pending')
-                      ->whereHas('paymentMethod', function($q) {
-                          $q->where('type', 'bank_transfer');
-                      });
-            })
+            ->where('status', Order::STATUS_PENDING)
             ->latest()
             ->get();
             

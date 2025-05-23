@@ -38,28 +38,32 @@
                 <TableCell class="py-3.5 px-6 align-middle">{{ formatPrice(order.total_amount) }}</TableCell>
                 <TableCell class="py-3.5 px-6 align-middle">
                   <Badge 
+                    v-if="order.payment?.payment_method"
                     variant="outline" 
                     class="border-blue-400 text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700"
                   >
                     {{ order.payment?.payment_method?.type === 'payment_gateway' ? 'Payment Gateway' : 'Transfer Bank' }}
                   </Badge>
+                  <span v-else class="text-slate-500 dark:text-slate-400">
+                    Belum dipilih
+                  </span>
                 </TableCell>
                 <TableCell class="py-3.5 px-6 align-middle">
                   <Badge 
                     variant="outline" 
                     :class="{
-                      'border-yellow-400 text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700': order.payment?.status === 'pending',
+                      'border-yellow-400 text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700': order.payment?.status === 'pending' || !order.payment,
                       'border-green-400 text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700': order.payment?.status === 'completed',
                       'border-red-400 text-red-600 bg-red-50 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700': order.payment?.status === 'failed'
                     }"
                   >
-                    {{ getPaymentStatusLabel(order.payment?.status) }}
+                    {{ !order.payment ? 'Belum Dibayar' : getPaymentStatusLabel(order.payment?.status) }}
                   </Badge>
                 </TableCell>
                 <TableCell class="py-3.5 px-6 align-middle">
                   <div class="flex space-x-2">
                     <Button
-                      v-if="order.payment?.payment_method"
+                      v-if="order.payment?.payment_method?.type === 'bank_transfer'"
                       variant="outline"
                       size="sm"
                       asChild

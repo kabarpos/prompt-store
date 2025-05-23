@@ -131,11 +131,26 @@ class HandleInertiaRequests extends Middleware
             ]);
         }
 
+        // Get categories for global access
+        $categories = [];
+        try {
+            $categories = Cache::remember('global_categories', now()->addHours(6), function () {
+                return \App\Models\Category::where('is_active', true)
+                    ->orderBy('name')
+                    ->get();
+            });
+        } catch (\Exception $e) {
+            Log::warning('Error saat mengambil kategori global', [
+                'message' => $e->getMessage()
+            ]);
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $userData,
             ],
             'cartCount' => $cartCount,
+            'categories' => $categories,
             'sidebarOpen' => $this->getSidebarState($request),
             'websiteSettings' => $websiteSettings,
             'componentPath' => $component,

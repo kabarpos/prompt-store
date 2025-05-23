@@ -139,12 +139,50 @@
         
         <!-- Featured Prompts -->
         <div class="mt-24">
-          <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Featured Prompts</h2>
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Featured Prompts</h2>
+            
+            <!-- Filter Dropdown -->
+            <div class="relative">
+              <button 
+                @click="showCategoryFilter = !showCategoryFilter"
+                class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm text-sm font-medium"
+              >
+                {{ selectedCategory ? selectedCategory.name : 'All Categories' }}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              
+              <div v-if="showCategoryFilter" class="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-10">
+                <ul class="py-2 max-h-60 overflow-auto">
+                  <li>
+                    <button 
+                      @click="filterByCategory(null)" 
+                      class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700"
+                      :class="{'text-primary-600 dark:text-primary-400': !selectedCategory}"
+                    >
+                      All Categories
+                    </button>
+                  </li>
+                  <li v-for="category in categories" :key="category.id">
+                    <button 
+                      @click="filterByCategory(category)" 
+                      class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700"
+                      :class="{'text-primary-600 dark:text-primary-400': selectedCategory && selectedCategory.id === category.id}"
+                    >
+                      {{ category.name }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
           
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <!-- Prompt Cards -->
             <div
-              v-for="product in products" 
+              v-for="product in filteredProducts" 
               :key="product.id"
               class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
               @click="goToProductDetail(product)"
@@ -176,7 +214,7 @@
             
             <!-- Cart Button -->
             <div 
-              v-if="products.length > 0"
+              v-if="filteredProducts.length > 0"
               class="bg-gradient-to-tr from-slate-900/30 to-slate-700/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center cursor-pointer"
               @click="goToCart"
             >
@@ -198,12 +236,12 @@
 
 <script setup>
 import { StarIcon, ShieldCheckIcon } from '@heroicons/vue/24/solid'
-import { onMounted } from 'vue'
+import { onMounted, ref, computed, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import { router } from '@inertiajs/vue3'
 
 // Define props untuk menerima data produk
-defineProps({
+const props = defineProps({
   products: {
     type: Array,
     default: () => []
@@ -212,6 +250,48 @@ defineProps({
     type: Array,
     default: () => []
   }
+})
+
+// State untuk filter kategori
+const showCategoryFilter = ref(false)
+const selectedCategory = ref(null)
+
+// Produk yang difilter berdasarkan kategori
+const filteredProducts = computed(() => {
+  if (!selectedCategory.value) {
+    return props.products
+  }
+  return props.products.filter(product => 
+    product.category_id === selectedCategory.value.id
+  )
+})
+
+// Fungsi untuk memfilter berdasarkan kategori
+const filterByCategory = (category) => {
+  selectedCategory.value = category
+  showCategoryFilter.value = false
+}
+
+// Handler untuk menutup dropdown saat klik di luar
+const handleClickOutside = (event) => {
+  const dropdown = document.querySelector('.relative')
+  if (dropdown && !dropdown.contains(event.target)) {
+    showCategoryFilter.value = false
+  }
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined' && window.AOS) {
+    window.AOS.init()
+  }
+  
+  // Tambahkan event listener untuk klik di luar dropdown
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  // Hapus event listener saat komponen dihapus
+  document.removeEventListener('click', handleClickOutside)
 })
 
 // Format harga dalam format rupiah
@@ -255,6 +335,10 @@ const addToCart = (productId) => {
 
 // Fungsi untuk navigasi ke halaman detail produk
 const goToProductDetail = (product) => {
+  if (!product || !product.slug) {
+    console.error('Slug produk tidak ditemukan:', product);
+    return;
+  }
   router.visit(`/products/${product.slug}`);
 };
 
@@ -262,10 +346,4 @@ const goToProductDetail = (product) => {
 const goToCart = () => {
   router.visit('/cart');
 };
-
-onMounted(() => {
-  if (typeof window !== 'undefined' && window.AOS) {
-    window.AOS.init()
-  }
-})
 </script> 
