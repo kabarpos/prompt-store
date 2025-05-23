@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->longText('hidden_content')->nullable()->after('digital_file_path')
+            $table->longText('hidden_content')->nullable()->after('description')
                 ->comment('Konten tersembunyi yang hanya terlihat setelah pembelian');
-            $table->boolean('has_hidden_content')->default(false)->after('is_digital')
+            $table->boolean('has_hidden_content')->default(false)->after('is_active')
                 ->comment('Indikator apakah produk memiliki konten tersembunyi');
         });
     }
@@ -29,4 +29,4 @@ return new class extends Migration
             $table->dropColumn('has_hidden_content');
         });
     }
-};
+}; 
